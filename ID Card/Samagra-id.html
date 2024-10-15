@@ -11,7 +11,7 @@
             margin: 0 auto;
             padding: 10px;
         }
-        textarea, input {;
+        textarea, input {
             width: 100%;
             margin-bottom: 10px;
             padding: 8px;
@@ -29,12 +29,11 @@
             background-color: #45a049;
         }
         .id-container {
-            border: 1px dashed; #000;
+            border: 1px dashed #000;
             padding: 10px;
             margin: 10px auto;
             display: flex;
             justify-content: space-between;
-          
             box-sizing: border-box;
         }
         .left-section, .right-section {
@@ -44,10 +43,8 @@
             width: 400px;
             height: 250px;
             position: relative;
-              border-radius: 5px;
-
+            border-radius: 5px;
         }
-
         .header {
             display: flex;
             justify-content: space-between;
@@ -80,7 +77,7 @@
             bottom: 5px;
         }
         .qr-section img {
-            height: 50px;
+            height: 80px;
         }
         .right-section table {
             width: 100%;
@@ -92,15 +89,13 @@
             padding: 5px;
             text-align: left;
             font-size: 10px;
-
         }
-
         .right-section th {
             background-color: #f2f2f2;
         }
         .right-section table tr:first-child {
-            font-weight:bold;
-            background-color: #fff0e6; /* Different color for the first row */
+            font-weight: bold;
+            background-color: #fff0e6;
         }
         .action-buttons {
             display: flex;
@@ -124,58 +119,53 @@
         }
         .drag-drop-zone.dragover {
             border-color: #4CAF50;
-           
         }
         .drag-drop-zone img {
             max-height: 50px;
         }
-#member-info {font-size:11px;
-text-align:center;
-font-weight:bold;
-}
-
-
-/* Responsive Styles */
-@media (max-width: 600px) {
-    .id-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .left-section, .right-section {
-        width: 100%; /* Full width for small screens */
-        margin-bottom: 20px; /* Add spacing between sections */
-    }
-
-    .header img {
-        height: 40px;
-    }
-
-    .header-title h1 {
-        font-size: 14px;
-    }
-
-    .header-title p {
-        font-size: 8px;
-    }
-
-    .details p, .print-date {
-        font-size: 8px;
-    }
-
-    .right-section th, .right-section td {
-        font-size: 8px;
-        padding: 4px;
-    }
-
-    .action-buttons button {
-        width: 100%; /* Full width for buttons */
-        margin-bottom: 10px; /* Spacing between buttons */
-    }
-}
-
+        #member-info {
+            font-size: 11px;
+            text-align: center;
+            font-weight: bold;
+        }
+        textarea:disabled {
+            background-color: #f0f0f0;
+            color: #666;
+            cursor: not-allowed;
+        }
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .id-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .left-section, .right-section {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .header img {
+                height: 40px;
+            }
+            .header-title h1 {
+                font-size: 14px;
+            }
+            .header-title p {
+                font-size: 8px;
+            }
+            .details p, .print-date {
+                font-size: 8px;
+            }
+            .right-section th, .right-section td {
+                font-size: 8px;
+                padding: 4px;
+            }
+            .action-buttons button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
         @media print {
-            body *  {
+            body * {
                 visibility: hidden;
             }
             #previewContainer, #previewContainer * {
@@ -186,10 +176,16 @@ font-weight:bold;
                 left: 0;
                 top: 0;
             }
-#detail, .action-buttons {display:none;}
-.right-section {margin-left:5px;}
-.right-section, .left-section {height:5.5;
-width:8.5;}
+            #detail, .action-buttons {
+                display: none;
+            }
+            .right-section {
+                margin-left: 5px;
+            }
+            .right-section, .left-section {
+                height: 5.5;
+                width: 8.5;
+            }
         }
     </style>
 </head>
@@ -199,7 +195,7 @@ width:8.5;}
         <textarea id="fullData" placeholder="Paste full data here" rows="4"></textarea>
         <div id="dragDropZone" class="drag-drop-zone">Drag and drop QR code image here or click to select</div>
         <input type="file" id="qrFileInput" accept="image/*" style="display:none;" />
-        <button onclick="generatePreview()">Submit to Generate id card</button>
+        <button onclick="generatePreview()">Submit Generate ID Card</button>
     </div>
 
     <div id="previewContainer" style="display: none;">
@@ -225,7 +221,6 @@ width:8.5;}
                 <div text-margin="auto" id="member-info"> परिवार के सदस्यो की जानकारी </div>
                 <table id="familyMembersTable">
                     <thead>
-                      
                     </thead>
                     <tbody>
                         <!-- Family members will be added here dynamically -->
@@ -237,8 +232,8 @@ width:8.5;}
             </div>
         </div>
         <div class="action-buttons">
-            <button  class="reload" onclick="location.reload();"> Reset <i class="fa fa-refresh" style="font-size:11px;color:white" ></i></button>
-            <button onclick="editForm()">Edit</button>
+            <button class="reload" onclick="location.reload();"> Reset <i class="fa fa-refresh" style="font-size:11px;color:white" ></i></button>
+            <button onclick="editForm()">Back</button>
             <button onclick="printPreview()">Print</button>
         </div>
     </div>
@@ -247,11 +242,10 @@ width:8.5;}
         const dragDropZone = document.getElementById('dragDropZone');
         const qrFileInput = document.getElementById('qrFileInput');
         const qrCodeImg = document.getElementById('qrCodeImg');
+        const fullDataTextarea = document.getElementById('fullData');
 
-        // Allow file upload by clicking the drag-drop zone
         dragDropZone.addEventListener('click', () => qrFileInput.click());
 
-        // Drag-and-drop logic
         dragDropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dragDropZone.classList.add('dragover');
@@ -281,58 +275,77 @@ width:8.5;}
             reader.readAsDataURL(file);
         }
 
-        function generatePreview() {
-            const fullData = document.getElementById('fullData').value;
-            const sections = fullData.split('परिवार के सदस्यो की जानकारी');
-            const leftData = sections[0].trim();
-            const rightData = sections[1].trim();
+       fullDataTextarea.addEventListener('paste', (e) => {
+    setTimeout(() => {
+        fullDataTextarea.disabled = true; // Disable after paste
+    }, 0);
+});
 
-            // Process left side data
-            const leftDetails = processLeftData(leftData);
-            document.getElementById('leftDetails').innerHTML = leftDetails;
+function generatePreview() {
+    fullDataTextarea.disabled = false;
+    const fullData = fullDataTextarea.value;
+    fullDataTextarea.disabled = true;
 
-            // Process right side data
-            const familyMembers = processRightData(rightData);
-            updateFamilyMembersTable(familyMembers);
+    const sections = fullData.split('परिवार के सदस्यो की जानकारी');
+    const leftData = sections[0].trim();
+    const rightData = sections[1].trim();
 
-            // Extract and display print date
-            const printDate = extractPrintDate(fullData);
-            document.getElementById('printDate').innerHTML = `<strong>कार्ड प्रिंट दिनांक:</strong> ${printDate}`;
+    const leftDetails = processLeftData(leftData);
+    document.getElementById('leftDetails').innerHTML = leftDetails;
 
-            document.getElementById('formContainer').style.display = 'none';
-            document.getElementById('previewContainer').style.display = 'block';
+    const familyMembers = processRightData(rightData);
+    updateFamilyMembersTable(familyMembers);
+
+    const printDate = extractPrintDate(fullData);
+    document.getElementById('printDate').innerHTML = `<strong>कार्ड प्रिंट दिनांक:</strong> ${printDate}`;
+
+    document.getElementById('formContainer').style.display = 'none';
+    document.getElementById('previewContainer').style.display = 'block';
+}
+
+function processLeftData(data) {
+    const lines = data.trim().split('\n');
+    let html = '';
+    const keyMappings = {
+        'समग्र परिवार आईडी': 'समग्र परिवार आईडी',
+        'मुखिया का नाम': 'मुखिया का नाम',
+        'वर्तमान निवास': 'वर्तमान निवास',
+        'ग्राम': 'ग्राम',
+        'ग्राम पंचायत': 'ग्राम पंचायत',
+        'जिला': 'जिला',
+        'आधार के अनुसार पता': 'आधार के अनुसार पता',
+        'समग्र में पंजीयन की दिनांक': 'समग्र में पंजीयन की दिनांक',
+        'पंजीयन कर्ता': 'पंजीयन कर्ता'  // Added this field
+    };
+
+    lines.forEach(line => {
+        const [key, value] = line.split(':').map(item => item.trim());
+        if (keyMappings[key]) {
+            html += `<p>${keyMappings[key]}:<strong>${value} </strong> </p>`;
         }
+    });
 
-        function processLeftData(data) {
-            const lines = data.trim().split('\n');
-            let html = '';
-            const keyMappings = {
-                'समग्र परिवार आईडी': 'समग्र परिवार आईडी',
-                'मुखिया का नाम': 'मुखिया का नाम',
-                'वर्तमान निवास': 'वर्तमान निवास',
-                'ग्राम': 'ग्राम',
-                'ग्राम पंचायत': 'ग्राम पंचायत',
-                'जिला': 'जिला',
-                'आधार के अनुसार पता': 'आधार के अनुसार पता',
-                'समग्र में पंजीयन की दिनांक': 'समग्र में पंजीयन की दिनांक'
-            };
+    return html;
+}
 
-            lines.forEach(line => {
-                const [key, value] = line.split(':').map(item => item.trim());
-                if (keyMappings[key]) {
-                    html += `<p>${keyMappings[key]}:<strong>${value} </strong> </p>`;
-                }
-            });
-
-            return html;
-        }
+function extractPrintDate(data) {
+    const dateRegex = /कार्ड प्रिंट दिनांक:\s*(.*)/;
+    const match = data.match(dateRegex);
+    
+    if (match && match[1]) {
+        return match[1];
+    } else {
+        const today = new Date().toLocaleDateString('hi-IN'); // Default to today's date
+        return today;
+    }
+}
 
         function processRightData(data) {
-            const lines = data.trim().split('\n').slice(1); // Skip the header line
+            const lines = data.trim().split('\n').slice(1);
             return lines.map((line) => {
                 const [number, id, aadhar, name, age, gender] = line.split('\t').map(item => item.trim());
                 return {number, id, aadhar, name, age, gender };
-            }).filter(member => member.id && member.aadhar && member.name); // Filter out undefined entries
+            }).filter(member => member.id && member.aadhar && member.name);
         }
 
         function updateFamilyMembersTable(familyMembers) {
@@ -341,7 +354,7 @@ width:8.5;}
             familyMembers.forEach((member) => {
                 const row = tableBody.insertRow();
                 row.innerHTML = `
-                 <td>${member.number}</td>
+                    <td>${member.number}</td>
                     <td>${member.id}</td>
                     <td>${member.aadhar}</td>
                     <td>${member.name}</td>
@@ -351,15 +364,18 @@ width:8.5;}
             });
         }
 
-        function extractPrintDate(data) {
-            const dateRegex = /कार्ड प्रिंट दिनांक:\s*(.*)/;
-            const match = data.match(dateRegex);
-            return match ? match[1] : 'N/A';
-        }
+          function extractPrintDate(data) {
+        const dateRegex = /कार्ड प्रिंट दिनांक:\s*(.*)/;
+        const match = data.match(dateRegex);
+        const today = new Date().toLocaleDateString('hi-IN'); // Today's date in Hindi format
+
+        return match && match[1] ? match[1] : today; // Default to today's date if no date is found
+    }
 
         function editForm() {
             document.getElementById('formContainer').style.display = 'block';
             document.getElementById('previewContainer').style.display = 'none';
+            fullDataTextarea.disabled = true;
         }
 
         function printPreview() {
