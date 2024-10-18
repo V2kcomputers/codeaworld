@@ -180,16 +180,28 @@
         .contact-info {
             width: 45%;
         }
+        @media print {
+      /* Hide header when printing */
+      #title , .button-group button {
+        display: none;
+      }
+       body {
+  
+        background-color: #fff;
+    }
+     
+     
+    } 
     </style>
 </head>
 <body>
-    <h1>शोक संदेश फॉर्म</h1>
+    <h1 id="title">शोक संदेश फॉर्म</h1>
     
     <form id="shokSandeshForm">
      
         
         <label for="deceased">स्वर्गीय का नाम:</label>
-        <input type="text" id="deceased" required placeholder="स्वर्गीय का नाम">
+        <input type="text"  placeholder="स्वर्गीय का नाम डालें" id="deceased" required>
         
         <label for="deathDate">निधन दिनांक:</label>
         <input type="date" id="deathDate" required>
@@ -323,7 +335,7 @@
             const phone = document.getElementById('phone').value;
 
             document.getElementById('deceasedInfo').innerHTML = `अत्यंत दुख के साथ सूचित करना पड़ रहा है कि <b>${deceased}</b> का स्वर्गवास दिनांक <b>${formatDateWithDay(deathDateValue)}</b> को हो गया है।`;
-            document.getElementById('ritualInfo').innerHTML = `अतः ब्रम्हलीन आत्मा की शांति हेतु <b>${ritual1}</b> दिनांक <b>${formatDateWithDay(ritual1DateValue)}</b> एवं <b>${ritual2}</b> दिनांक <b>${formatDateWithDay(ritual2DateValue)}</b> को है। सो आप जानवें`;
+            document.getElementById('ritualInfo').innerHTML = `अतः ब्रम्हलीन आत्मा की शांति हेतु <b>${ritual1}</b> दिनांक <b>${formatDateWithDay(ritual1DateValue)}</b> एवं <b>${ritual2}</b> दिनांक <b>${formatDateWithDay(ritual2DateValue)}</b> को है। सो आप जानवें!`;
             document.getElementById('addressPreview').innerHTML = `कार्यस्थल: <b>${address}</b>`;
             document.getElementById('phonePreview').innerHTML = `संपर्क: <b>${phone}</b>`;
             
@@ -364,12 +376,53 @@
   
         // ... (previous JavaScript functions remain unchanged) ...
 
-        function editPreview() {
-            document.getElementById('preview').style.display = 'none';
-            document.getElementById('preview4Up').style.display = 'none';
-            document.getElementById('shokSandeshForm').style.display = 'block';
-            document.getElementById('buttonGroup').style.display = 'none';
-        }
+       function editPreview() {
+    // Show the form again and hide the preview
+    document.getElementById('preview').style.display = 'none';
+    document.getElementById('shokSandeshForm').style.display = 'block';
+    document.getElementById('buttonGroup').style.display = 'none';
+
+    // Repopulate the form with the current values
+    document.getElementById('deceased').value = document.getElementById('deceasedInfo').innerText.match(/<b>(.*?)<\/b>/)[1];  // Extract name from the preview
+    document.getElementById('deathDate').value = extractDateFromPreview('deceasedInfo'); // Refill date
+    document.getElementById('ritual1Date').value = extractDateFromPreview('ritualInfo', 0); // Ritual 1 date
+    document.getElementById('ritual2Date').value = extractDateFromPreview('ritualInfo', 1); // Ritual 2 date
+
+    // Address and phone
+    document.getElementById('address').value = document.getElementById('addressPreview').innerText.split(': ')[1];
+    document.getElementById('phone').value = document.getElementById('phonePreview').innerText.split(': ')[1];
+
+    // Reset family members (more complex logic could be added here)
+    const familyListColumn1 = document.getElementById('familyListColumn1').children;
+    const familyListColumn2 = document.getElementById('familyListColumn2').children;
+    const familyMembers = [...familyListColumn1, ...familyListColumn2];
+
+    const familyMembersDiv = document.getElementById('familyMembers');
+    familyMembersDiv.innerHTML = '';  // Clear old family members
+    familyMembers.forEach(member => {
+        const relation = member.innerText.split(':')[0].trim();
+        const name = member.innerText.split(':')[1].trim();
+
+        const newMemberDiv = document.createElement('div');
+        newMemberDiv.classList.add('family-member');
+        newMemberDiv.innerHTML = `
+            <select class="relation" required>
+                <option value="" disabled>संबंध चुनें</option>
+                ${relations.map(r => `<option value="${r}" ${r === relation ? 'selected' : ''}>${r}</option>`).join('')}
+            </select>
+            <input type="text" placeholder="नाम" class="name" value="${name}" required>
+            <button type="button" onclick="this.parentElement.remove()">हटाएं</button>
+        `;
+        familyMembersDiv.appendChild(newMemberDiv);
+    });
+}
+
+function extractDateFromPreview(elementId, index = 0) {
+    const regex = /(\d{2}\/\d{2}\/\d{4})/g;
+    const matches = document.getElementById(elementId).innerHTML.match(regex);
+    return matches ? matches[index].split('/').reverse().join('-') : '';
+}
+
 
         function printPreview() {
             window.print();
