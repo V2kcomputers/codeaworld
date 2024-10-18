@@ -443,16 +443,23 @@ function extractDateFromPreview(elementId, index = 0) {
                 preview4Up.style.display = 'block';
             });
         }
+function saveAsImage() {
+    const preview = document.getElementById('preview');
+    const scale = 2; // Increase this value for even higher resolution, but be mindful of performance
 
-    function saveAsImage() {
-            const preview = document.getElementById('preview');
-            html2canvas(preview).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'shok_sandesh.png';  // Save the image as a PNG
-                link.href = canvas.toDataURL('image/png');  // Generate PNG from the canvas
-                link.click();
-            });
-        }
+    html2canvas(preview, {
+        scale: scale,
+        useCORS: true,
+        logging: false,
+        allowTaint: true,
+        backgroundColor: null
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'shok_sandesh.png';
+        link.href = canvas.toDataURL('image/png', 1.0); // Use maximum quality for PNG
+        link.click();
+    });
+}
     </script>
     
 </body>
