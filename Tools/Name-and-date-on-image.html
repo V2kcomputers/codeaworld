@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload with Text Overlay and Save Option</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+        #imageUploadContainer {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #fafafa;
+        }
+        #imageUploadContainer:hover {
+            background-color: #f0f0f0;
+        }
+        #imagePreview {
+            margin-top: 15px;
+            max-width: 100%;
+            display: block;
+            border-radius: 5px;
+        }
+        input[type="text"], input[type="date"], select, button {
+            margin: 10px 0;
+            padding: 8px 10px;
+            width: 100%;
+            font-size: 14px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="imageUploadContainer" onclick="document.getElementById('imageUpload').click()">
+            <p>Click, drag, or paste an image here</p>
+        </div>
+        <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+        <br>
+        <input type="text" id="nameInput" placeholder="Enter name">
+        <input type="date" id="dateInput">
+        <button id="applyText">Apply Text</button>
+        <canvas id="canvas"></canvas>
+        <img id="imagePreview" alt="Preview Image" style="display:none;">
+        <select id="fileType">
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+        </select>
+        <button id="saveImage">Save Image</button>
+    </div>
+
+    <script>
+        const imageUploadContainer = document.getElementById('imageUploadContainer');
+        const imageUpload = document.getElementById('imageUpload');
+        const nameInput = document.getElementById('nameInput');
+        const dateInput = document.getElementById('dateInput');
+        const applyButton = document.getElementById('applyText');
+        const saveButton = document.getElementById('saveImage');
+        const fileType = document.getElementById('fileType');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const imagePreview = document.getElementById('imagePreview');
+        let currentImage = null;
+
+        // Handle image upload via input
+        imageUpload.addEventListener('change', handleImage);
+
+        // Handle drag-and-drop
+        imageUploadContainer.addEventListener('dragover', (e) => e.preventDefault());
+        imageUploadContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                loadFile(file);
+            }
+        });
+
+        // Handle paste event
+        window.addEventListener('paste', (e) => {
+            const items = e.clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const blob = items[i].getAsFile();
+                    loadFile(blob);
+                }
+            }
+        });
+
+        function handleImage(e) {
+            const file = e.target.files[0];
+            if (file) loadFile(file);
+        }
+
+       function loadFile(file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                currentImage = new Image();
+                currentImage.onload = function () {
+                    canvas.width = currentImage.width;
+                    canvas.height = currentImage.height;
+                    drawImage(); // Draw image with text once loaded
+                };
+                currentImage.src = event.target.result;
+                imagePreview.src = event.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        applyButton.addEventListener('click', drawImage);
+
+        function drawImage() {
+            if (!currentImage) return;
+
+            // Clear canvas first
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the image
+            ctx.drawImage(currentImage, 0, 0);
+
+            const name = nameInput.value || 'Name';
+            const date = dateInput.value ? new Date(dateInput.value).toLocaleDateString('en-GB') : '19/10/2024';
+
+            ctx.font = '16px Arial';
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            const lineHeight = 20;
+            const x = canvas.width / 2;
+            const y = canvas.height - (lineHeight * 2) - 10;
+
+            // Draw white background
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.fillRect(0, y - 5, canvas.width, (lineHeight * 2) + 10);
+
+            // Draw text
+            ctx.fillStyle = 'black';
+            ctx.fillText(name, x, y);
+            ctx.fillText(date, x, y + lineHeight);
+
+            // Update the image preview
+            imagePreview.src = canvas.toDataURL();
+        }
+
+        saveButton.addEventListener('click', function () {
+            const dataURL = canvas.toDataURL(fileType.value);
+            const link = document.createElement('a');
+            link.download = 'image-with-text.' + (fileType.value === 'image/jpeg' ? 'jpg' : 'png');
+            link.href = dataURL;
+            link.click();
+        });
+
+        // Set default date to 19/10/2024
+        dateInput.valueAsDate = new Date('2024-10-19');
+    </script>
+</body>
+</html>
