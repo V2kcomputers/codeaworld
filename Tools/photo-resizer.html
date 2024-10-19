@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .file-drop {
+            border: 2px dashed #bbb;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .file-drop.dragover {
+            border-color: #0095ff;
+            background-color: #e3f2fd;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-label {
+            background-color: #0095ff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        label, input[type="number"], select {
+            display: block;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #preview-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #preview {
+            display: inline-block;
+            max-width: 150px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Resizer</h1>
+    <div class="file-drop" id="fileDrop">
+        <input type="file" id="imageInput" accept="image/*">
+        <label class="custom-file-label" for="imageInput">Choose Image or Drag & Drop</label>
+        <p>or paste an image here</p>
+    </div>
+
+    <label for="widthInput">Width:</label>
+    <input type="number" id="widthInput" min="1" value="300">
+
+    <label for="heightInput">Height:</label>
+    <input type="number" id="heightInput" min="1" value="300">
+
+    <label for="formatSelect">Save As:</label>
+    <select id="formatSelect">
+        <option value="png">PNG</option>
+        <option value="jpeg">JPEG</option>
+    </select>
+
+    <button id="resizeButton">Resize and Save</button>
+
+    <div id="preview-container">
+        <img id="preview" alt="Preview" />
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
+        const resizeButton = document.getElementById('resizeButton');
+        const preview = document.getElementById('preview');
+        const fileDrop = document.getElementById('fileDrop');
+        const formatSelect = document.getElementById('formatSelect');
+        let originalImage;
+
+        // Function to handle image display
+        const displayImage = (file) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                originalImage = new Image();
+                originalImage.onload = () => {
+                    preview.src = event.target.result;
+                };
+                originalImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        // Handle file input
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                displayImage(file);
+            }
+        });
+
+        // Handle drag and drop
+        fileDrop.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileDrop.classList.add('dragover');
+        });
+
+        fileDrop.addEventListener('dragleave', () => {
+            fileDrop.classList.remove('dragover');
+        });
+
+        fileDrop.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileDrop.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                displayImage(file);
+            }
+        });
+
+        // Handle paste event for image pasting
+        document.addEventListener('paste', (e) => {
+            const items = e.clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const file = items[i].getAsFile();
+                    if (file) {
+                        displayImage(file);
+                    }
+                }
+            }
+        });
+
+        // Resize image
+        resizeButton.addEventListener('click', () => {
+            if (!originalImage) {
+                alert('Please upload an image first.');
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = widthInput.value;
+            canvas.height = heightInput.value;
+
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+
+            const format = formatSelect.value;
+            const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `resized_image.${format}`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }, mimeType);
+        });
+    </script>
+</body>
+</html>
