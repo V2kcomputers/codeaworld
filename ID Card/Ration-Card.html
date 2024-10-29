@@ -471,7 +471,6 @@
 
    function generatePreview() {
     const data = document.getElementById('rationData').value;
-
     // Extract details using regular expressions or splitting
     const rationCardNo = data.match(/Ration Card No\.\s*:\s*(\d+)/)?.[1] || 'N/A';
     const scheme = data.match(/Scheme:\s*(\w+)/)?.[1] || 'N/A';
@@ -485,13 +484,14 @@
     document.getElementById('address').innerText = address;
     document.getElementById('onorccheck').innerText = onorc;
 
-    const familyMembersMatch = data.match(/Family Members\s*([\s\S]*?)(?=\n\s*\n|$)/);
+    const familyMembersMatch = data.match(/Family Members\s*([\s\S]*?)(?=\s*Note:|$)/);
     if (!familyMembersMatch) return;
 
-    const familyMembersSection = familyMembersMatch[1]
+
+     const familyMembersSection = familyMembersMatch[1]
         .trim()
         .split('\n')
-        .filter(line => line.trim());
+        .filter(line => line.trim() && !line.includes('Note:- Source IMPDS'));
 
     const tableBody = document.getElementById('familyMembersTable');
     tableBody.innerHTML = `
@@ -503,14 +503,13 @@
             <th>UID Status</th>
         </tr>
     `;
-
+      let rowCount = 0; // Initialize row counter
     const startIndex = familyMembersSection[0].toLowerCase().includes('sl.no') ? 1 : 0;
 
     for (let i = startIndex; i < familyMembersSection.length; i++) {
         const line = familyMembersSection[i].trim();
         if (!line) continue;
-
-        const components = line.split(/\s+/);
+         const components = line.split(/\s+/);
         if (components.length < 5) continue;
 
         const slNo = components[0];
@@ -537,12 +536,12 @@
             <td>${uidStatus}</td>
         `;
         tableBody.appendChild(row);
+        rowCount++; // Increment row counter for each added row
     }
-
     // Calculate and display Patrata amount
-    const memberCount = familyMembersSection.length - startIndex; // Exclude header if present
-    const patrataAmount = (memberCount-1) * 5 ; // 5 kg per member
-    document.querySelector('.Patrata').innerText = `${patrataAmount} kg`;
+  const actualMemberCount = familyMembersSection.length - startIndex;
+    const patrataAmount = rowCount * 5;  // 5 kg per row
+    document.querySelector('.Patrata').innerText = ` ${patrataAmount} kg`;
 }
 
    // Initialize the page
