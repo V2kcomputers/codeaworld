@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP Bhulekh Request Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            justify-content: center; /* Center content vertically */
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>RCMS MP Bhulekh Request Form</h2>
+        <form id="requestForm" onsubmit="handleSubmit(event)">
+            <div class="input-group">
+                <label for="requestId">MPLRS No. (ऍम.पी.एल.आर.एस.क्रमांक:)</label>
+                <input 
+                    type="text" 
+                    id="requestId" 
+                    name="requestId" 
+                    placeholder="Enter MPLRS No. (e.g., 12345678901)"
+                    pattern="[0-9]{11}"
+                    required
+                >
+                <div id="error" class="error">Please enter a valid 11-digit MPLRS No..</div>
+            </div>
+            <button type="submit">Download Now</button>
+        </form>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const requestId = document.getElementById('requestId').value;
+            const errorElement = document.getElementById('error');
+            
+            if (/^\d{11}$/.test(requestId)) {
+                const url = `https://mpbhulekh.gov.in/GetRequestDtlKbm.do?requestId=${requestId}`;
+                window.location.href = url;
+            } else {
+                errorElement.style.display = 'block';
+            }
+        }
+
+        document.getElementById('requestId').addEventListener('input', function() {
+            document.getElementById('error').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
