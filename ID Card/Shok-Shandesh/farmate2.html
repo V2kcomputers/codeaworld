@@ -19,6 +19,18 @@
             font-family: "Arya", serif;
             font-weight: 400;
         }
+
+    #preview-card {
+            font-family: "Arya", serif; /* Default font for preview */
+            width: 500px;
+            border: 1px solid black;
+            padding: 10px;
+            background-color: #fff;
+            margin: 20px auto;
+            border-radius: 5px;
+        }
+
+
         .form-container, .card-container {
             width: 400px;
             background: white;
@@ -142,6 +154,17 @@
         <button class="print" onclick="window.print()">Print <i class="fa fa-print" style="font-size:11px;color:white"></i></button>
         <button onclick="saveAsImage()">Save as PNG</button>
         <button onclick="editCard()">Edit</button>
+<button>
+ <select id="fontSelect">
+        <option value="Arya, serif">Arya</option>
+        <option value="Amita, cursive">Amita</option>
+        <option value="Roboto, sans-serif">Roboto</option>
+        <option value="Arial, sans-serif">Arial</option>
+        <option value="Times New Roman, serif">Times New Roman</option>
+    </select> </button>
+
+
+
     </div>
 
     <script>
@@ -204,5 +227,14 @@ function saveAsImage() {
             document.getElementById('preview-actions').style.display = 'none';
         }
     </script>
+<script>
+        // JavaScript to change font based on selection
+        document.getElementById('fontSelect').addEventListener('change', function() {
+            const selectedFont = this.value;
+            document.getElementById('preview-card').style.fontFamily = selectedFont;
+        });
+    </script>
+
+
 </body>
 </html>
