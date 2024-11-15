@@ -157,6 +157,7 @@
             body * {
                 visibility: hidden;
                 font-size: 12pt;
+                background-color: #fff;
             }
 
 
@@ -235,7 +236,7 @@
     
     <div class="buttons-container">
         <button onclick="saveAsPNG()">Save as High-Quality PNG</button>
-        <button onclick="window.print()">Print Shok Sandesh</button>
+        <button onclick="window.print()">Print Card</button>
     </div>
     <div class="margin-customizer" onchange ="updateMargins()">
         <lable> Page Left </lable>
@@ -329,7 +330,7 @@
         const gridContainer = document.getElementById("gridContainer");
         html2canvas(gridContainer, { scale: 2 }).then(canvas => {
             const link = document.createElement("a");
-            link.download = "Shok-Sandesh-Sheet.png";
+            link.download = "Card-Sheet.png";
             link.href = canvas.toDataURL("image/png");
             link.click();
         });
