@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .tools-panel {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .preview-panel {
+            flex: 2;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .tool-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: none;
+            color: #333;
+        }
+        .tool-button:hover {
+            border-color: #0066cc;
+            background: #f0f7ff;
+        }
+        .tool-button.active {
+            border-color: #0066cc;
+            background: #e5f1ff;
+        }
+        .tool-button i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .tool-button span {
+            font-size: 12px;
+            text-align: center;
+        }
+        .controls-panel {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        .controls-panel.active {
+            display: block;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        canvas {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .billing-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .price {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .credits {
+            color: #666;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+        }
+        .btn:hover {
+            background: #0052a3;
+        }
+        .btn-buy {
+            background: #28a745;
+        }
+        .btn-download {
+            background: #0066cc;
+        }
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .preview-panel {
+                order: 1;
+            }
+            .tools-panel {
+                order: 2;
+            }
+            .tools-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="tools-panel">
+            <div class="billing-info">
+                <div>
+                    <div class="price">Credits: <span id="creditBalance">10</span></div>
+                    <div class="credits">1 credit per edit</div>
+                </div>
+                <button class="btn btn-buy" id="buyCredits">Buy Credits</button>
+            </div>
+
+            <input type="file" id="imageInput" accept="image/*" style="margin-bottom: 20px;">
+
+            <div class="tools-grid">
+                <button class="tool-button" data-tool="brightness">
+                    <i class="fas fa-sun"></i>
+                    <span>Brightness</span>
+                </button>
+                <button class="tool-button" data-tool="contrast">
+                    <i class="fas fa-adjust"></i>
+                    <span>Contrast</span>
+                </button>
+                <button class="tool-button" data-tool="saturation">
+                    <i class="fas fa-palette"></i>
+                    <span>Saturation</span>
+                </button>
+                <button class="tool-button" data-tool="hue">
+                    <i class="fas fa-circle-half-stroke"></i>
+                    <span>Hue</span>
+                </button>
+                <button class="tool-button" data-tool="rgb">
+                    <i class="fas fa-rainbow"></i>
+                    <span>RGB</span>
+                </button>
+                <button class="tool-button" data-tool="temperature">
+                    <i class="fas fa-temperature-high"></i>
+                    <span>Temperature</span>
+                </button>
+                <button class="tool-button" data-tool="sharpen">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    <span>Sharpen</span>
+                </button>
+                <button class="tool-button" data-tool="blur">
+                    <i class="fas fa-droplet"></i>
+                    <span>Blur</span>
+                </button>
+            </div>
+
+            <!-- Control Panels -->
+            <div class="controls-panel" data-panel="brightness">
+                <div class="control-group">
+                    <label>Brightness</label>
+                    <input type="range" id="brightness" min="0" max="200" value="100">
+                </div>
+            </div>
+
+            <div class="controls-panel" data-panel="contrast">
+                <div class="control-group">
+                    <label>Contrast</label>
+                    <input type="range" id="contrast" min="0" max="200" value="100">
+                </div>
+            </div>
+
+            <div class="controls-panel" data-panel="saturation">
+                <div class="control-group">
+                    <label>Saturation</label>
+                    <input type="range" id="saturation" min="0" max="200" value="100">
+                </div>
+            </div>
+
+            <div class="controls-panel" data-panel="hue">
+                <div class="control-group">
+                    <label>Hue Rotation</label>
+                    <input type="range" id="hue" min="0" max="360" value="0">
+                </div>
+            </div>
+
+            <div class="controls-panel" data-panel="rgb">
+                <div class="control-group">
+                    <label>Red</label>
+                    <input type="range" id="red" min="0" max="200" value="100">
+                </div>
+                <div class="control-group">
+                    <label>Green</label>
+                    <input type="range" id="green" min="0" max="200" value="100">
+                </div>
+                <div class="control-group">
+                    <label>Blue</label>
+                    <input type="range" id="blue" min="0" max="200" value="100">
+                </div>
+            </div>
+
+            <div class="controls-panel" data-panel="temperature">
+                <div class="control-group">
+                    <label>Temperature</label>
+                    <input type="range" id="temperature" min="-100" max="100" value="0">
+                </div>
+            </div>
+
+            <div class="controls-panel" data-panel="sharpen">
+                <div class="control-group">
+                    <label>Sharpen</label>
+                    <input type="range" id="sharpen" min="0" max="100" value="0">
+                </div>
+            </div>
+
+            <div class="controls-panel" data-panel="blur">
+                <div class="control-group">
+                    <label>Blur</label>
+                    <input type="range" id="blur" min="0" max="10" value="0">
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-download" id="download">Download Image</button>
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            <div class="canvas-container">
+                <canvas id="canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let image = null;
+        let credits = 10;
+        let activePanel = null;
+
+        // Initialize tool buttons
+        document.querySelectorAll('.tool-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const tool = button.dataset.tool;
+                
+                // Toggle active state for buttons
+                document.querySelectorAll('.tool-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+
+                // Toggle control panels
+                document.querySelectorAll('.controls-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.querySelector(`.controls-panel[data-panel="${tool}"]`).classList.add('active');
+
+                if (credits > 0) {
+                    credits--;
+                    updateCredits();
+                }
+            });
+        });
+
+        function updateCredits() {
+            document.getElementById('creditBalance').textContent = credits;
+        }
+
+        // Load image
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                image = new Image();
+                image.onload = function() {
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    applyFilters();
+                };
+                image.src = event.target.result;
+            };
+            
+            reader.readAsDataURL(file);
+        });
+
+        // Apply filters function
+        function applyFilters() {
+            if (!image) return;
+
+            const hue = document.getElementById('hue').value;
+            const saturation = document.getElementById('saturation').value;
+            const brightness = document.getElementById('brightness').value;
+            const contrast = document.getElementById('contrast').value;
+            const red = document.getElementById('red').value;
+            const green = document.getElementById('green').value;
+            const blue = document.getElementById('blue').value;
+            const blur = document.getElementById('blur').value;
+            const temperature = document.getElementById('temperature').value;
+
+            // Draw original image
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.filter = `
+                hue-rotate(${hue}deg)
+                saturate(${saturation}%)
+                brightness(${brightness}%)
+                contrast(${contrast}%)
+                blur(${blur}px)
+            `;
+            ctx.drawImage(image, 0, 0);
+
+            // Apply RGB and temperature adjustments
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                // RGB adjustments
+                data[i] = data[i] * (red / 100);     // Red
+                data[i + 1] = data[i + 1] * (green / 100); // Green
+                data[i + 2] = data[i + 2] * (blue / 100);  // Blue
+
+                // Temperature adjustment
+                if (temperature > 0) {
+                    data[i] += temperature * 2;     // More red
+                    data[i + 2] -= temperature;     // Less blue
+                } else {
+                    data[i] += temperature;         // Less red
+                    data[i + 2] -= temperature * 2; // More blue
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        // Buy credits
+        document.getElementById('buyCredits').addEventListener('click', function() {
+            credits += 10;
+            updateCredits();
+            alert('10 credits added! ($0.99 charged)');
+        });
+
+        // Add event listeners for all controls
+        const controls = ['hue', 'saturation', 'brightness', 'contrast', 'red', 'green', 'blue', 'blur', 'temperature', 'sharpen'];
+        controls.forEach(control => {
+            const element = document.getElementById(control);
+            if (element) {
+                element.addEventListener('input', applyFilters);
+            }
+        });
+
+        // Download functionality
+        document.getElementById('download').addEventListener('click', function() {
+            if (!image || credits <= 0) return;
+            
+            credits--;
+            updateCredits();
+            const link = document.createElement('a');
+            link.download = 'edited-image.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    </script>
+</body>
+</html>
