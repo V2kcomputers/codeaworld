@@ -190,14 +190,19 @@
 }
 
         function saveAsImage() {
-            const tableElement = document.getElementById('baner');
-            html2canvas(tableElement).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'table.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            });
-        }
+    const tableElement = document.getElementById('baner');
+
+    // Use html2canvas with higher scale for better resolution
+    html2canvas(tableElement, {
+        scale: 3, // Increase the scale for higher resolution (default is 1)
+        useCORS: true // Ensures cross-origin images are loaded properly
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'mpdage-baner.png';
+        link.href = canvas.toDataURL('image/png', 1.0); // High-quality PNG
+        link.click();
+    });
+}
 
     function editInfo() {
     document.getElementById('outputContainer').classList.add('hidden');
