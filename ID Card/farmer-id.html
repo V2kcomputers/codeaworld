@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #2B5329;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #1e3d1d;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f0f0f0;
+            max-height: 100vh;
+            align-items: top;
+            justify-content: center;
+        }
+
+        .card {
+            width: 380px;
+            height: 240px;
+            background: white;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            height: 48px;
+            background: #2B5329;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: white;
+            border-radius: 100% 100% 0 0;
+        }
+
+        .header-text {
+            position: absolute;
+            left: 16px;
+            top: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .farmer-id {
+            position: absolute;
+            right: 16px;
+            top: 12px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 16px;
+            padding-top: 0;
+        }
+
+        .info {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .card-number {
+            position: absolute;
+            bottom: 40px;
+            left: 30%;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .photo {
+            position: absolute;
+            right: 16px;
+            top: 60px;
+            width: 80px;
+            height: 80px;
+            background: #FFD700;
+            border: 2px solid #2B5329;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-circle {
+            width: 48px;
+            height: 48px;
+            background: #8B4513;
+            border-radius: 50%;
+        }
+
+        .qr-code {
+            position: absolute;
+            right: 16px;
+            top: 110px;
+            width: 60px;
+            height: 60px;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .logo {
+            position: absolute;
+            bottom: 8px;
+            right: 5%;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 100px;
+        }
+
+
+      
+
+        .leaf {
+            position: absolute;
+            bottom: 10px;
+            left: 3%;
+            width: 60px;
+        }
+  .header-text {gap:5px;
+        display: flex;
+        justify-content: center;
+
+        }
+
+        .leaf1 {  
+
+border-radius: 50%;
+height:30px;
+width: 30px;
+background-color: #f9d6a9;
+
+ }
+
+      @media print {
+      /* Hide header when printing */
+      button, #note {
+        display: none;
+        background-color: #fff;
+      }
+       .container {
+  color:black;
+  background-color: #fff;
+       box-shadow: 1px 1px 6px 1px #fff;
+    }
+     
+     
+    } 
+
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+        <h2>Kissan Card Application Form</h2>
+        <form id="kissanForm">
+            <div class="form-group">
+                <label for="farmerID">Farmer ID</label>
+                <input type="text" id="farmerID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Kisan Name</label>
+                <input type="text" id="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fatherName">Father's Name</label>
+                <input type="text" id="fatherName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="tel" id="mobile" pattern="[0-9]{10}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Photo</label>
+                <input type="file" id="photo" accept="image/*">
+            </div>
+
+            <button type="submit">Generate Card</button>
+        </form>
+    </div>
+
+
+    <div class="container" id="cardContainer" style="display: none;">
+        <!-- Front Card -->
+        <div class="card">
+            <div class="header">
+                <div class="header-text"> <svg  class="leaf1" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-51.2 -51.2 614.40 614.40" xml:space="preserve" fill="#000000">
+
+<g id="SVGRepo_bgCarrier" stroke-width="0"/>
+
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+
+<g id="SVGRepo_iconCarrier"> <path style="fill:#001433;" d="M256,0c141.311,0,256,114.689,256,256S397.311,512,256,512S0,397.311,0,256S114.689,0,256,0z"/> <path style="fill:#900909;" d="M168.661,318.177c1.823-0.547,3.647-0.729,5.652-0.729c6.746,0,12.946,3.282,16.593,8.387 c2.553-9.481,11.305-16.41,21.516-16.41c2.006,0,3.829,0.182,5.652,0.729c1.459-10.758,10.758-18.963,21.698-18.963 c7.84,0,14.587,4.011,18.598,10.211c4.376-4.194,10.393-6.746,16.775-6.746c7.84,0,14.769,3.647,19.145,9.299 c4.011-10.211,13.858-17.504,25.527-17.504c14.222,0,25.892,10.758,27.35,24.615c1.276-0.182,2.553-0.365,3.829-0.365 c6.564,0,12.399,3.282,15.863,8.205c3.829-2.917,8.752-4.741,13.858-4.741c8.387,0,15.681,4.558,19.692,11.122 c-16.228,10.211-33.915,18.234-52.695,23.704c-6.564-1.094-12.034-5.47-14.587-11.305c-4.011,2.188-8.57,3.464-13.311,3.464 c-9.481,0-17.687-4.741-22.61-11.852c-3.829,8.387-12.399,14.04-22.063,14.04c-9.299,0-17.504-5.288-21.698-13.128 c-3.829,2.917-8.57,4.741-13.675,4.741c-1.823,0-3.464-0.182-5.288-0.547c-0.729,5.288-3.1,9.846-6.746,13.311 c-21.516-6.746-41.573-16.775-59.442-29.721L168.661,318.177z M312.16,356.103c-7.293,0.729-14.587,1.094-22.063,1.094h-0.182 c1.641-4.558,6.199-8.023,11.305-8.023c4.741,0,8.934,2.735,10.94,6.746V356.103z M264.387,355.738 c-3.829-0.547-7.658-1.094-11.487-1.823c0.182-3.1,2.735-5.47,5.835-5.47c3.282,0,5.835,2.553,5.835,5.835 c0,0.547,0,0.912-0.182,1.276V355.738z"/> <g> <path style="fill:#06a210;" d="M405.88,10.211C190.906-19.692,237.584,184.707,342.063,128 C390.017,101.926,378.712,27.533,405.88,10.211z"/> <path style="fill:#06a210;" d="M134.199,115.783c161.003-61.083,157.538,91.168,74.211,68.194 C167.385,172.672,158.632,121.801,134.199,115.783z"/> </g> <path style="fill:#FFE356;" d="M276.604,223.909l-3.464,0.182c-12.399-85.333-71.84-91.897-72.023-92.08 C243.966,138.576,273.322,170.12,276.604,223.909z"/> <path style="fill:#06a210;" d="M397.675,169.937c-132.376-48.866-128.365,75.852-60.353,56.342 C370.872,216.615,377.618,175.043,397.675,169.937z"/> <g> <path style="fill:#FFE356;" d="M273.14,266.393l3.464,0.729c24.068-86.792,86.61-86.063,86.792-86.063 c-45.219,1.276-79.863,30.085-90.256,85.516V266.393z"/> <path style="fill:#FFE356;" d="M367.59,32.456c-115.601,33.003-84.422,192.547-82.234,278.063l-14.04,4.376 C267.67,235.031,247.066,52.695,367.59,32.456z"/> </g> <path style="fill:#6c0404;" d="M179.783,325.652c5.835,0.547,10.94,3.647,14.405,8.023c2.553-9.117,10.94-15.863,20.969-15.863 c1.823,0,3.829,0.182,5.47,0.729c1.459-10.393,10.393-18.234,21.151-18.234c7.476,0,14.222,3.829,17.869,9.846 c4.194-4.011,10.028-6.564,16.228-6.564c7.476,0,14.222,3.464,18.598,8.934c3.829-10.028,13.493-16.957,24.798-16.957 c13.675,0,25.162,10.393,26.439,23.886c1.276-0.182,2.37-0.365,3.647-0.365c6.382,0,12.034,3.1,15.316,8.023 c3.829-2.917,8.387-4.558,13.493-4.558c6.199,0,11.852,2.553,16.046,6.746c-30.632,17.869-66.37,28.08-104.296,28.08 c-40.479,0-78.222-11.487-110.131-31.544V325.652z"/> <path style="fill:#f9d6a9;" d="M226.279,294.108c34.826,10.029,99.191,20.786,99.191,20.786s-3.647,23.157-23.157,27.533 s-71.476-5.835-71.476-5.835s-9.481,9.299,7.293,12.399c16.775,3.1,98.644,1.276,98.644,1.276s84.239-39.932,98.644-45.219 c14.405-5.288,23.157,8.023,23.157,8.023s-96.821,76.764-105.937,83.328c-9.117,6.746-159.727,19.692-159.727,19.692l-44.672,4.558 l-48.137,38.291c-24.798-19.145-46.131-42.667-62.541-69.652l68.741-50.142c25.345-42.484,85.151-55.248,119.977-45.219V294.108z"/> <path style="fill:#F0BA7D;" d="M445.447,323.464c-26.803,21.151-85.698,67.829-92.809,72.934 c-9.117,6.746-159.727,19.692-159.727,19.692l-44.672,4.558l-48.137,38.291c-1.641-1.276-3.282-2.553-4.923-3.829 c26.803-20.786,56.524-44.672,54.154-43.396c-2.37,1.276,184.889-13.311,199.658-20.969c14.952-7.658,86.427-62.541,89.527-66.553 C441.618,320.365,445.447,323.464,445.447,323.464L445.447,323.464z"/> <g> <path style="fill:#FFFFFF;" d="M299.396,312.889l-1.823,8.57l20.057,1.276c1.459-1.641,2.553-3.647,1.823-6.929l-20.057-2.735 V312.889z"/> <path style="fill:#FFFFFF;" d="M443.077,319.453l2.37,2.553l10.758-7.658c0.729-1.459-2.553-2.006-2.553-2.006L443.077,319.453z"/> </g> </g>
+
+</svg>  KISSAN CARD</div>
+                <div class="farmer-id">Farmer ID</div>
+            </div>
+            <div class="content">
+                <div class="info">   </div>
+                <div class="photo">
+                    <div class="photo-circle"></div>
+                </div>
+                <div class="card-number">  </div>
+             
+<div class="leaf"> 
+
+
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+     viewBox="0 0 512.001 512.001" xml:space="preserve">
+<path style="fill:#6DC82A;" d="M282.915,211.33c-3.863,4.077-9.324,6.225-14.941,5.877c-1.943-0.123-48.129-3.298-95.369-28.754
+    c-44.641-24.056-98.511-72.868-101.639-168.804c-0.172-5.232,1.831-10.3,5.531-14.002C82.141,0,88.765,0,91.594,0
+    c0.001,0,0.001,0,0.001,0c2.001,0,49.045,0.338,97.518,29.403c25.163,15.089,46.083,35.148,62.181,59.622
+    c19.446,29.566,31.786,65.589,36.678,107.066C288.63,201.671,286.777,207.252,282.915,211.33z"/>
+<path style="fill:#5EAC24;" d="M251.887,89.963c-7.938,14.65-14.633,31.15-19.437,49.738c-4.32,12.902-10.917,35.57-16.362,66.933
+    c28.719,8.988,50.563,10.49,51.886,10.573c5.618,0.349,11.078-1.799,14.941-5.877c3.862-4.078,5.715-9.659,5.056-15.237
+    C283.13,155.048,270.983,119.354,251.887,89.963z"/>
+<path style="fill:#4E901E;" d="M266.674,178.855l-40.788-39.775L215.13,85.482c-0.851-4.248-4.984-6.997-9.233-6.147
+    c-4.248,0.852-6.998,4.987-6.147,9.233l6.245,31.116L183.5,97.748l-10.904-54.335c-0.851-4.248-4.986-6.994-9.233-6.147
+    c-4.248,0.852-6.998,4.986-6.147,9.233l6.392,31.852l-52.492-51.184c-3.104-3.024-8.066-2.96-11.091,0.14
+    c-3.024,3.102-2.961,8.067,0.14,11.09l57.719,56.284l-40.264-0.688c-4.327-0.118-7.901,3.377-7.976,7.708
+    c-0.073,4.331,3.377,7.901,7.708,7.976l56.907,0.973l26.775,26.11l-40.88-0.697c-4.292-0.096-7.901,3.377-7.976,7.708
+    c-0.073,4.331,3.377,7.901,7.708,7.976l57.522,0.982l38.311,37.358c1.526,1.487,3.501,2.227,5.474,2.227
+    c2.04,0,4.078-0.792,5.617-2.368C269.837,186.843,269.775,181.878,266.674,178.855z"/>
+<path style="fill:#91DC5A;" d="M467.824,5.914c-3.863-4.077-9.324-6.225-14.941-5.877c-1.943,0.123-48.129,3.298-95.369,28.754
+    c-36.301,19.561-78.701,55.493-94.961,119.819c-8.881,26.153-28.446,97.078-23.87,203.868c0.396,9.239,8.01,16.463,17.17,16.462
+    c0.248,0,0.498-0.005,0.749-0.016c9.489-0.407,16.852-8.428,16.446-17.919c-2.371-55.323,2.184-100.55,8.054-133.923
+    c13.209-0.757,52.566-5.045,92.92-29.241c25.163-15.089,46.083-35.148,62.181-59.622c19.446-29.566,31.786-65.589,36.678-107.066
+    C473.539,15.573,471.686,9.992,467.824,5.914z"/>
+<path style="fill:#5EAC24;" d="M443.129,27.307c-3.026-3.101-7.991-3.164-11.091-0.14L379.55,78.35l6.392-31.851
+    c0.851-4.247-1.899-8.38-6.147-9.233c-4.242-0.848-8.381,1.899-9.233,6.147l-10.905,54.335l-22.494,21.936l6.245-31.116
+    c0.852-4.247-1.899-8.38-6.147-9.233c-4.246-0.85-8.381,1.899-9.233,6.147l-10.757,53.599l-40.789,39.775
+    c-3.102,3.024-3.163,7.989-0.14,11.09c1.538,1.576,3.575,2.367,5.617,2.367c1.974,0,3.95-0.74,5.474-2.227l38.311-37.358
+    l57.524-0.982c4.331-0.074,7.781-3.644,7.708-7.976c-0.073-4.286-3.57-7.709-7.839-7.709c-0.046,0-0.092,0-0.137,0.001
+    l-40.881,0.697l26.775-26.11l56.907-0.973c4.331-0.074,7.781-3.644,7.708-7.976c-0.073-4.286-3.57-7.709-7.839-7.709
+    c-0.046,0-0.092,0-0.137,0.001l-40.264,0.688l57.719-56.284C446.091,35.373,446.153,30.408,443.129,27.307z"/>
+<path style="fill:#CC7400;" d="M449.193,410.125c-7.91,0-15.298,2.228-21.577,6.087c-9.274-30.342-37.491-52.414-70.869-52.414
+    c-3.704,0-7.341,0.28-10.898,0.805c-15.13-34.614-49.655-58.813-89.846-58.813s-74.716,24.199-89.846,58.813
+    c-3.558-0.525-7.196-0.805-10.898-0.805c-33.378,0-61.594,22.072-70.869,52.414c-6.279-3.859-13.666-6.087-21.577-6.087
+    c-22.795,0-41.275,18.48-41.275,41.275s18.48,41.275,41.275,41.275c12.216,0,23.188-5.31,30.744-13.744
+    c13.282,19.931,35.954,33.07,61.701,33.07c20.851,0,39.68-8.625,53.144-22.487c14.097,7.848,30.321,12.334,47.601,12.334
+    c17.279,0,33.504-4.487,47.601-12.334c13.466,13.862,32.293,22.487,53.144,22.487c25.747,0,48.42-13.137,61.701-33.07
+    c7.557,8.434,18.529,13.744,30.744,13.744c22.795,0,41.275-18.48,41.275-41.275C490.468,428.604,471.988,410.125,449.193,410.125z"
+    />
+<g>
+    <path style="fill:#AA6100;" d="M309.888,345.918c9.748,0,19.154,1.443,28.042,4.092c-17.525-26.63-47.666-44.221-81.928-44.221
+        c-40.192,0-74.716,24.199-89.846,58.813c-3.558-0.525-7.196-0.805-10.898-0.805c-33.378,0-61.594,22.072-70.869,52.414
+        c-6.279-3.859-13.666-6.087-21.577-6.087c-22.795,0-41.275,18.48-41.275,41.275c0,22.795,18.48,41.275,41.275,41.275
+        c12.216,0,23.188-5.31,30.744-13.744c13.282,19.931,35.954,33.07,61.701,33.07c20.851,0,39.68-8.625,53.144-22.487
+        c6.148,3.423,12.7,6.204,19.567,8.255c-10.172-15.451-16.108-33.939-16.108-53.821C211.86,389.808,255.749,345.918,309.888,345.918
+        z"/>
+    <circle style="fill:#AA6100;" cx="294.986" cy="421.014" r="17.771"/>
+    <circle style="fill:#AA6100;" cx="366.638" cy="462.863" r="17.771"/>
+    <circle style="fill:#AA6100;" cx="355.71" cy="402.055" r="6.838"/>
+    <circle style="fill:#AA6100;" cx="256.002" cy="469.702" r="6.838"/>
+    <circle style="fill:#AA6100;" cx="277.209" cy="376.498" r="6.838"/>
+    <circle style="fill:#AA6100;" cx="424.351" cy="438.791" r="6.838"/>
+</g>
+<g>
+    <circle style="fill:#CC7400;" cx="384.415" cy="317.216" r="17.771"/>
+    <circle style="fill:#CC7400;" cx="424.351" cy="356.953" r="6.838"/>
+    <circle style="fill:#CC7400;" cx="424.351" cy="324.055" r="6.838"/>
+</g>
+<g>
+    <circle style="fill:#AA6100;" cx="112.53" cy="310.942" r="17.771"/>
+    <circle style="fill:#AA6100;" cx="83.02" cy="350.115" r="6.838"/>
+</g>
+</svg>
+
+
+</div>
+
+
+
+
+
+                <div class="logo">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6AzeOtok47WOEao2EZeQwSr_0wd7ESyRbfOXJ3vIBEEwBztGJmi0tr_t2mdrmR8PbUCnqlRp9FGuttpyyUpKiCN7zExmgUjYdeQwjQQkRONSgtdl95Dn7Z_lWeB2kQadLiyJLEPaJZQJS9OUgNrhaiTUlNakWImsHPFq8OJBnVJXDevFcGGcH1ryO7g/s1600/image-removebg-preview%20%284%29.png" alt="Agri Stack Logo">
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Card -->
+        <div class="card">
+            <div class="header">
+                <div class="header-text">  <svg  class="leaf1" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-51.2 -51.2 614.40 614.40" xml:space="preserve" fill="#000000">
+
+<g id="SVGRepo_bgCarrier" stroke-width="0"/>
+
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+
+<g id="SVGRepo_iconCarrier"> <path style="fill:#001433;" d="M256,0c141.311,0,256,114.689,256,256S397.311,512,256,512S0,397.311,0,256S114.689,0,256,0z"/> <path style="fill:#900909;" d="M168.661,318.177c1.823-0.547,3.647-0.729,5.652-0.729c6.746,0,12.946,3.282,16.593,8.387 c2.553-9.481,11.305-16.41,21.516-16.41c2.006,0,3.829,0.182,5.652,0.729c1.459-10.758,10.758-18.963,21.698-18.963 c7.84,0,14.587,4.011,18.598,10.211c4.376-4.194,10.393-6.746,16.775-6.746c7.84,0,14.769,3.647,19.145,9.299 c4.011-10.211,13.858-17.504,25.527-17.504c14.222,0,25.892,10.758,27.35,24.615c1.276-0.182,2.553-0.365,3.829-0.365 c6.564,0,12.399,3.282,15.863,8.205c3.829-2.917,8.752-4.741,13.858-4.741c8.387,0,15.681,4.558,19.692,11.122 c-16.228,10.211-33.915,18.234-52.695,23.704c-6.564-1.094-12.034-5.47-14.587-11.305c-4.011,2.188-8.57,3.464-13.311,3.464 c-9.481,0-17.687-4.741-22.61-11.852c-3.829,8.387-12.399,14.04-22.063,14.04c-9.299,0-17.504-5.288-21.698-13.128 c-3.829,2.917-8.57,4.741-13.675,4.741c-1.823,0-3.464-0.182-5.288-0.547c-0.729,5.288-3.1,9.846-6.746,13.311 c-21.516-6.746-41.573-16.775-59.442-29.721L168.661,318.177z M312.16,356.103c-7.293,0.729-14.587,1.094-22.063,1.094h-0.182 c1.641-4.558,6.199-8.023,11.305-8.023c4.741,0,8.934,2.735,10.94,6.746V356.103z M264.387,355.738 c-3.829-0.547-7.658-1.094-11.487-1.823c0.182-3.1,2.735-5.47,5.835-5.47c3.282,0,5.835,2.553,5.835,5.835 c0,0.547,0,0.912-0.182,1.276V355.738z"/> <g> <path style="fill:#06a210;" d="M405.88,10.211C190.906-19.692,237.584,184.707,342.063,128 C390.017,101.926,378.712,27.533,405.88,10.211z"/> <path style="fill:#06a210;" d="M134.199,115.783c161.003-61.083,157.538,91.168,74.211,68.194 C167.385,172.672,158.632,121.801,134.199,115.783z"/> </g> <path style="fill:#FFE356;" d="M276.604,223.909l-3.464,0.182c-12.399-85.333-71.84-91.897-72.023-92.08 C243.966,138.576,273.322,170.12,276.604,223.909z"/> <path style="fill:#06a210;" d="M397.675,169.937c-132.376-48.866-128.365,75.852-60.353,56.342 C370.872,216.615,377.618,175.043,397.675,169.937z"/> <g> <path style="fill:#FFE356;" d="M273.14,266.393l3.464,0.729c24.068-86.792,86.61-86.063,86.792-86.063 c-45.219,1.276-79.863,30.085-90.256,85.516V266.393z"/> <path style="fill:#FFE356;" d="M367.59,32.456c-115.601,33.003-84.422,192.547-82.234,278.063l-14.04,4.376 C267.67,235.031,247.066,52.695,367.59,32.456z"/> </g> <path style="fill:#6c0404;" d="M179.783,325.652c5.835,0.547,10.94,3.647,14.405,8.023c2.553-9.117,10.94-15.863,20.969-15.863 c1.823,0,3.829,0.182,5.47,0.729c1.459-10.393,10.393-18.234,21.151-18.234c7.476,0,14.222,3.829,17.869,9.846 c4.194-4.011,10.028-6.564,16.228-6.564c7.476,0,14.222,3.464,18.598,8.934c3.829-10.028,13.493-16.957,24.798-16.957 c13.675,0,25.162,10.393,26.439,23.886c1.276-0.182,2.37-0.365,3.647-0.365c6.382,0,12.034,3.1,15.316,8.023 c3.829-2.917,8.387-4.558,13.493-4.558c6.199,0,11.852,2.553,16.046,6.746c-30.632,17.869-66.37,28.08-104.296,28.08 c-40.479,0-78.222-11.487-110.131-31.544V325.652z"/> <path style="fill:#f9d6a9;" d="M226.279,294.108c34.826,10.029,99.191,20.786,99.191,20.786s-3.647,23.157-23.157,27.533 s-71.476-5.835-71.476-5.835s-9.481,9.299,7.293,12.399c16.775,3.1,98.644,1.276,98.644,1.276s84.239-39.932,98.644-45.219 c14.405-5.288,23.157,8.023,23.157,8.023s-96.821,76.764-105.937,83.328c-9.117,6.746-159.727,19.692-159.727,19.692l-44.672,4.558 l-48.137,38.291c-24.798-19.145-46.131-42.667-62.541-69.652l68.741-50.142c25.345-42.484,85.151-55.248,119.977-45.219V294.108z"/> <path style="fill:#F0BA7D;" d="M445.447,323.464c-26.803,21.151-85.698,67.829-92.809,72.934 c-9.117,6.746-159.727,19.692-159.727,19.692l-44.672,4.558l-48.137,38.291c-1.641-1.276-3.282-2.553-4.923-3.829 c26.803-20.786,56.524-44.672,54.154-43.396c-2.37,1.276,184.889-13.311,199.658-20.969c14.952-7.658,86.427-62.541,89.527-66.553 C441.618,320.365,445.447,323.464,445.447,323.464L445.447,323.464z"/> <g> <path style="fill:#FFFFFF;" d="M299.396,312.889l-1.823,8.57l20.057,1.276c1.459-1.641,2.553-3.647,1.823-6.929l-20.057-2.735 V312.889z"/> <path style="fill:#FFFFFF;" d="M443.077,319.453l2.37,2.553l10.758-7.658c0.729-1.459-2.553-2.006-2.553-2.006L443.077,319.453z"/> </g> </g>
+
+</svg> KISSAN CARD </div>
+            </div>
+            <div class="content">
+                <div class="info">  </div>
+                <div ><div id="qrcode" class="qr-code" ></div>
+              </div>
+                <div class="card-number"  > </div>
+              
+<div class="leaf"> <svg  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000">
+
+<g id="SVGRepo_bgCarrier" stroke-width="0"/>
+
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+
+<g id="SVGRepo_iconCarrier"> <g> <g> <path style="fill:#098113;" d="M260.339,303.729c-4.79,0-8.678-3.888-8.678-8.678c0-66.629,65.571-190.915,190.915-190.915 c4.79,0,8.678,3.888,8.678,8.678C451.254,179.443,385.684,303.729,260.339,303.729"/> <path style="fill:#098113;" d="M182.237,156.203c-103.65,0-156.203-49.638-156.203-147.525c0-4.79,3.888-8.678,8.678-8.678 c103.65,0,156.203,49.638,156.203,147.525C190.915,152.316,187.028,156.203,182.237,156.203"/> </g> <g> <path style="fill:#027e0e;" d="M216.97,470.093c-0.816,0-1.64-0.121-2.465-0.364c-4.591-1.354-7.22-6.179-5.858-10.778 c43.763-147.994-8.99-276.063-33.159-305.968c-3.011-3.732-2.439-9.199,1.293-12.21c3.732-3.003,9.181-2.43,12.201,1.302 c30.156,37.307,81.156,170.14,36.3,321.796C224.173,467.646,220.719,470.093,216.97,470.093"/> <path style="fill:#027e0e;" d="M234.174,338.954c-0.911,0-1.848-0.148-2.768-0.46c-4.539-1.527-6.986-6.448-5.458-10.986 c3.341-9.928,20.575-31.345,51.243-63.636c45.993-48.458,48.961-48.128,53.014-47.677c4.764,0.547,8.183,4.851,7.637,9.607 c-0.33,2.89-2.048,5.285-4.408,6.604c-9.303,7.411-85.539,84.289-91.032,100.63C241.186,336.663,237.801,338.954,234.174,338.954"/> <path style="fill:#027e0e;" d="M182.242,156.203c-2.352,0-4.703-0.946-6.413-2.82c-27.752-30.382-73.711-62.117-74.171-62.438 c-3.948-2.716-4.946-8.123-2.23-12.071c2.716-3.94,8.114-4.938,12.071-2.222c1.944,1.336,48.067,33.193,77.147,65.015 c3.228,3.541,2.985,9.034-0.555,12.262C186.424,155.457,184.333,156.203,182.242,156.203"/> </g> <path style="fill:#a85405;" d="M459.932,459.932c0-14.379-11.654-26.034-26.034-26.034c-11.724,0-21.643,7.758-24.906,18.415 c-1.406,4.608-5.832,7.619-10.648,7.619c-4.105,0-7.68-2.317-9.849-5.797c-3.879-6.239-13.451-11.559-24.021-11.559 c0-14.379-11.655-26.034-26.034-26.034c-7.55,0-14.284,3.263-19.039,8.392c-3.662-9.945-13.138-17.07-24.35-17.07 c-14.379,0-26.034,11.654-26.034,26.034c-14.839,0-26.78,12.418-25.999,27.431c0.382,7.281,3.983,13.581,9.277,17.998 c0.148-0.338,0.391-0.616,0.495-0.981c3.263-10.657,13.182-18.415,24.906-18.415c14.379,0,26.034,11.655,26.034,26.034 c14.379,0,26.034,11.655,26.034,26.034h130.169c14.379,0,26.034-11.654,26.034-26.034 C485.966,471.587,474.312,459.932,459.932,459.932"/> <path style="fill:#3f0318;" d="M303.728,485.966c0-14.379-11.655-26.034-26.034-26.034c-11.724,0-21.643,7.758-24.897,18.415 c-0.113,0.364-0.356,0.642-0.503,0.981c-5.294-4.417-8.895-10.717-9.277-17.998c-0.026-0.477,0.069-0.92,0.069-1.397h-17.46 c-11.724,0-21.643,7.758-24.906,18.415c-1.406,4.608-5.832,7.619-10.648,7.619c-4.105,0-7.68-2.317-9.85-5.797 c-3.879-6.239-13.451-11.559-24.021-11.559c0-14.379-11.654-26.034-26.034-26.034c-7.55,0-14.284,3.263-19.039,8.392 c-3.662-9.945-13.138-17.07-24.35-17.07c-14.379,0-26.034,11.654-26.034,26.034c-14.839,0-26.78,12.418-25.999,27.431 C35.483,501.448,48.118,512,62.22,512h267.542C329.762,497.621,318.107,485.966,303.728,485.966"/> </g> </g>
+
+</svg></div>
+
+
+
+                <div class="logo">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6AzeOtok47WOEao2EZeQwSr_0wd7ESyRbfOXJ3vIBEEwBztGJmi0tr_t2mdrmR8PbUCnqlRp9FGuttpyyUpKiCN7zExmgUjYdeQwjQQkRONSgtdl95Dn7Z_lWeB2kQadLiyJLEPaJZQJS9OUgNrhaiTUlNakWImsHPFq8OJBnVJXDevFcGGcH1ryO7g/s1600/image-removebg-preview%20%284%29.png" alt="Agri Stack Logo">
+                </div>
+            </div>
+        </div>
+          </div>
+        <div id="buttons" style="display: none; text-align: center; margin: 20px;">
+    <button id="editButton">Edit</button>
+      <button class="print" onclick="window.print()">Print <i class="fa fa-print" style="font-size:11px;color:white"></i></button>
+    <button id="saveButton">Download</button>
+</div>
+
+  
+
+
+     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script>
+        // URL for the QR Code
+        const url = "https://mpfr.agristack.gov.in/farmer-registry-mp/#/";
+
+        // Generate QR Code in SVG format
+        QRCode.toString(url, { type: 'svg', color: { dark: '#000', light: '#FFF' } }, (err, svg) => {
+            if (err) throw err;
+            document.getElementById('qrcode').innerHTML = svg;
+        });
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+
+
+
+<script>
+        function formatCardNumber(number) {
+    return number.replace(/(\d{4})(?=\d)/g, '$1 ');
+}
+
+document.getElementById('kissanForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Get form values
+    const farmerID = document.getElementById('farmerID').value;
+    const formattedFarmerID = formatCardNumber(farmerID); // Format Farmer ID
+    const name = document.getElementById('name').value;
+    const fatherName = document.getElementById('fatherName').value;
+    const gender = document.getElementById('gender').value;
+    const mobile = document.getElementById('mobile').value;
+    const address = document.getElementById('address').value;
+
+    // Update card content
+    document.querySelectorAll('.card-number')[0].textContent = formattedFarmerID;
+    document.querySelectorAll('.card-number')[1].textContent = formattedFarmerID;
+    document.querySelector('.info').innerHTML = `
+        <p>${name}</p>
+        <p>${fatherName}</p>
+        <p>${gender}</p>
+       
+    `;
+    document.querySelectorAll('.info')[1].innerHTML = `
+        <p>Address:</p>
+        <p>${address}</p>
+         <p>Mo. ${mobile}</p>
+    `;
+
+    // Generate QR Code
+    QRCode.toString("https://mpfr.agristack.gov.in/farmer-registry-mp/#/", 
+        { type: 'svg', color: { dark: '#000', light: '#FFF' } }, 
+        (err, svg) => {
+            if (err) throw err;
+            document.getElementById('qrcode').innerHTML = svg;
+        }
+    );
+
+    // Hide form and show card with buttons
+    document.querySelector('.form-container').style.display = 'none'; // Hide form
+    const cardContainer = document.getElementById('cardContainer');
+    cardContainer.style.display = 'flex'; // Ensure the card is shown
+    document.getElementById('buttons').style.display = 'block'; // Show buttons
+});
+
+
+        // Handle photo upload
+        document.getElementById('photo').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoDiv = document.querySelector('.photo');
+                    photoDiv.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+
+
+        document.getElementById('editButton').addEventListener('click', function () {
+    document.querySelector('.form-container').style.display = 'block';
+    document.getElementById('cardContainer').style.display = 'none';
+    document.getElementById('buttons').style.display = 'none';
+});
+
+// Handle Print button
+document.getElementById('printButton').addEventListener('click', function () {
+    const printContent = document.getElementById('cardContainer').innerHTML;
+    const printWindow = window.open('', '', 'width=600,height=400');
+    printWindow.document.write('<html><head><title>Print Card</title></head><body>');
+    printWindow.document.write(printContent);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+});
+
+// Handle Save as PNG button
+document.getElementById('saveButton').addEventListener('click', function () {
+    html2canvas(document.getElementById('cardContainer')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'kisan-card.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+});
+    </script>
+
+</body>
+</html>
