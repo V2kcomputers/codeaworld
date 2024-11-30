@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced Image Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #sidebar {
+            width: 300;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+        .tool-section {
+            background-color: #34495e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .tool-section h3 {
+            margin-bottom: 10px;
+            color: #ecf0f1;
+            display: flex;
+            align-items: center;
+        }
+        .tool-section h3 i {
+            margin-right: 10px;
+        }
+        #sidebar input, 
+        #sidebar select, 
+        #sidebar button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            border: none;
+        }
+        #canvasContainer {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ecf0f1;
+            padding: 20px;
+        }
+        #imageCanvas {
+            border: 2px solid #bdc3c7;
+            background-color: white;
+        }
+        .icon-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-btn i {
+            margin-right: 5px;
+        }
+        .icon-btn:hover {
+            background-color: #2980b9;
+        }
+        .color-picker {
+            -webkit-appearance: none;
+            border: none;
+            width: 100%;
+            height: 40px;
+        }
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .color-picker::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
+        .shape-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .shape-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .additional-images {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .additional-images img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+         .selected-options {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .selected-options button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .selected-options button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="tool-section">
+            <h3><i class="fas fa-file-upload"></i> Image Tools</h3>
+            <input type="file" id="imageUpload" accept="image/*">
+            <div class="additional-images" id="additionalImages">
+                <img src="/api/placeholder/300/200?text=Nature" alt="Nature Image" data-url="/api/placeholder/300/200?text=Nature">
+                <img src="/api/placeholder/300/200?text=City" alt="City Image" data-url="/api/placeholder/300/200?text=City">
+                <img src="/api/placeholder/300/200?text=Abstract" alt="Abstract Image" data-url="/api/placeholder/300/200?text=Abstract">
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <h3><i class="fas fa-expand-arrows-alt"></i> Image Resize</h3>
+            <label>Width: <input type="number" id="widthInput" min="10" max="2000"></label>
+            <label>Height: <input type="number" id="heightInput" min="10" max="2000"></label>
+            <button class="icon-btn" id="resizeBtn"><i class="fas fa-compress-arrows-alt"></i> Resize</button>
+        </div>
+
+        <div class="tool-section">
+            <h3><i class="fas fa-font"></i> Text Options</h3>
+            <input type="text" id="textInput" placeholder="Enter text">
+            <select id="fontSelect">
+                <option value="Arial">Arial</option>
+                <option value="Helvetica">Helvetica</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier">Courier</option>
+                <option value="Verdana">Verdana</option>
+            </select>
+            <div>
+                <label>Text Color:</label>
+                <input type="color" id="textColorPicker" class="color-picker" value="#000000">
+            </div>
+            <div>
+                <label>Font Size:</label>
+                <input type="number" id="fontSizeInput" min="10" max="200" value="24">
+            </div>
+            <button class="icon-btn" id="addTextBtn"><i class="fas fa-plus-circle"></i> Add Text</button>
+        </div>
+
+        <div class="tool-section">
+            <h3><i class="fas fa-shapes"></i> Shapes</h3>
+            <div class="shape-grid">
+                <button class="shape-btn" data-shape="rectangle"><i class="fas fa-square"></i> Rectangle</button>
+                <button class="shape-btn" data-shape="circle"><i class="fas fa-circle"></i> Circle</button>
+                <button class="shape-btn" data-shape="triangle"><i class="fas fa-play"></i> Triangle</button>
+            </div>
+            <div>
+                <label>Shape Fill Color:</label>
+                <input type="color" id="shapeColorPicker" class="color-picker" value="#3498db">
+            </div>
+            <div>
+                <label>Shape Stroke Color:</label>
+                <input type="color" id="shapeStrokeColorPicker" class="color-picker" value="#2980b9">
+            </div>
+        </div>
+ <div class="selected-options" id="selectedOptions">
+        <button id="deleteBtn"><i class="fas fa-trash-alt"></i> Delete</button>
+        <button id="editBtn"><i class="fas fa-edit"></i> Edit</button>
+        <div>
+            <label>Fill Color:</label>
+            <input type="color" id="fillColorPicker" class="color-picker" value="#3498db">
+        </div>
+        <div>
+            <label>Stroke Color:</label>
+            <input type="color" id="strokeColorPicker" class="color-picker" value="#2980b9">
+        </div>
+    </div>
+        <div class="tool-section">
+            <h3><i class="fas fa-save"></i> Export</h3>
+            <button class="icon-btn" id="convertToSvgBtn"><i class="fas fa-file-export"></i> Convert to SVG</button>
+            <button class="icon-btn" id="downloadSvgBtn" disabled><i class="fas fa-download"></i> Download SVG</button>
+        </div>
+
+    </div>
+
+    <div id="canvasContainer">
+        <canvas id="imageCanvas" width="800" height="800"></canvas>
+    </div>
+
+    <script>
+        const canvas = new fabric.Canvas('imageCanvas');
+        let currentImage = null;
+
+        // Image Upload
+        function loadImage(imageUrl) {
+            fabric.Image.fromURL(imageUrl, function(img) {
+                canvas.clear();
+                
+                // Scale image to fit canvas
+                const scaleFactor = Math.min(
+                    canvas.width / img.width, 
+                    canvas.height / img.height
+                );
+                
+                img.set({
+                    left: canvas.width / 2,
+                    top: canvas.height / 2,
+                    originX: 'center',
+                    originY: 'center',
+                    scaleX: scaleFactor,
+                    scaleY: scaleFactor
+                });
+
+                canvas.add(img);
+                canvas.renderAll();
+                currentImage = img;
+
+                // Update width and height inputs
+                document.getElementById('widthInput').value = Math.round(img.width * img.scaleX);
+                document.getElementById('heightInput').value = Math.round(img.height * img.scaleY);
+            });
+        }
+
+        // File Upload
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                loadImage(event.target.result);
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        // Additional Images
+        document.getElementById('additionalImages').addEventListener('click', function(e) {
+            const img = e.target.closest('img');
+            if (img) {
+                loadImage(img.dataset.url);
+            }
+        });
+
+        // Resize Image
+        document.getElementById('resizeBtn').addEventListener('click', function() {
+            if (!currentImage) return;
+
+            const newWidth = parseInt(document.getElementById('widthInput').value);
+            const newHeight = parseInt(document.getElementById('heightInput').value);
+
+            currentImage.set({
+                scaleX: newWidth / currentImage.width,
+                scaleY: newHeight / currentImage.height
+            });
+
+            canvas.renderAll();
+        });
+
+        // Add Text
+        document.getElementById('addTextBtn').addEventListener('click', function() {
+            const textContent = document.getElementById('textInput').value;
+            const fontFamily = document.getElementById('fontSelect').value;
+            const textColor = document.getElementById('textColorPicker').value;
+            const fontSize = parseInt(document.getElementById('fontSizeInput').value);
+
+            if (!textContent) return;
+
+            const text = new fabric.Text(textContent, {
+                left: canvas.width / 2,
+                top: canvas.height / 2,
+                fontFamily: fontFamily,
+                fill: textColor,
+                fontSize: fontSize,
+                originX: 'center',
+                originY: 'center'
+            });
+
+            canvas.add(text);
+            canvas.renderAll();
+        });
+
+        // Shapes
+        document.querySelectorAll('.shape-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const shapeType = this.dataset.shape;
+                const fillColor = document.getElementById('shapeColorPicker').value;
+                const strokeColor = document.getElementById('shapeStrokeColorPicker').value;
+
+                let shape;
+                switch(shapeType) {
+                    case 'rectangle':
+                        shape = new fabric.Rect({
+                            left: canvas.width / 2,
+                            top: canvas.height / 2,
+                            fill: fillColor,
+                            stroke: strokeColor,
+                            width: 100,
+                            height: 100,
+                            originX: 'center',
+                            originY: 'center',
+                            strokeWidth: 2
+                        });
+                        break;
+                    case 'circle':
+                        shape = new fabric.Circle({
+                            left: canvas.width / 2,
+                            top: canvas.height / 2,
+                            fill: fillColor,
+                            stroke: strokeColor,
+                            radius: 50,
+                            originX: 'center',
+                            originY: 'center',
+                            strokeWidth: 2
+                        });
+                        break;
+                    case 'triangle':
+                        shape = new fabric.Triangle({
+                            left: canvas.width / 2,
+                            top: canvas.height / 2,
+                            fill: fillColor,
+                            stroke: strokeColor,
+                            width: 100,
+                            height: 100,
+                            originX: 'center',
+                            originY: 'center',
+                            strokeWidth: 2
+                        });
+                        break;
+                }
+
+                canvas.add(shape);
+                canvas.renderAll();
+            });
+        });
+
+        // SVG Conversion
+        document.getElementById('convertToSvgBtn').addEventListener('click', function() {
+            if (canvas.getObjects().length === 0) return;
+
+            const svgString = canvas.toSVG({
+                suppressPreamble: false,
+                viewBox: {
+                    x: 0,
+                    y: 0,
+                    width: canvas.width,
+                    height: canvas.height
+                }
+            });
+
+            const svgBlob = new Blob([svgString], {type: 'image/svg+xml'});
+            const svgUrl = URL.createObjectURL(svgBlob);
+
+            const downloadSvgBtn = document.getElementById('downloadSvgBtn');
+            downloadSvgBtn.disabled = false;
+            downloadSvgBtn.onclick = function() {
+                const a = document.createElement('a');
+                a.href = svgUrl;
+                a.download = 'svgimage.svg';
+                a.click();
+                URL.revokeObjectURL(svgUrl);
+            };
+        });
+
+let selectedElement = null;
+
+        canvas.on('object:selected', function(e) {
+            selectedElement = e.target;
+            document.getElementById('selectedOptions').style.display = 'flex';
+            document.getElementById('selectedOptions').style.left = e.e.clientX + 'px';
+            document.getElementById('selectedOptions').style.top = e.e.clientY + 'px';
+        });
+
+        canvas.on('selection:cleared', function() {
+            selectedElement = null;
+            document.getElementById('selectedOptions').style.display = 'none';
+        });
+
+        document.getElementById('deleteBtn').addEventListener('click', function() {
+            if (selectedElement) {
+                canvas.remove(selectedElement);
+                canvas.renderAll();
+                selectedElement = null;
+                document.getElementById('selectedOptions').style.display = 'none';
+            }
+        });
+
+        document.getElementById('editBtn').addEventListener('click', function() {
+            if (selectedElement) {
+                // Show appropriate editor based on element type (text, shape, etc.)
+                if (selectedElement instanceof fabric.Text) {
+                    // Show text editing options
+                    document.getElementById('textInput').value = selectedElement.text;
+                    document.getElementById('fontSelect').value = selectedElement.fontFamily;
+                    document.getElementById('textColorPicker').value = selectedElement.fill;
+                    document.getElementById('fontSizeInput').value = selectedElement.fontSize;
+                } else if (selectedElement instanceof fabric.Rect || selectedElement instanceof fabric.Circle || selectedElement instanceof fabric.Triangle) {
+                    // Show shape editing options
+                    document.getElementById('shapeColorPicker').value = selectedElement.fill;
+                    document.getElementById('shapeStrokeColorPicker').value = selectedElement.stroke;
+                }
+            }
+        });
+
+        document.getElementById('fillColorPicker').addEventListener('change', function() {
+            if (selectedElement) {
+                selectedElement.set('fill', this.value);
+                canvas.renderAll();
+            }
+        });
+
+        document.getElementById('strokeColorPicker').addEventListener('change', function() {
+            if (selectedElement) {
+                selectedElement.set('stroke', this.value);
+                canvas.renderAll();
+            }
+        });
+        
+    </script>
+</body>
+</html>
