@@ -125,13 +125,14 @@
                         placeholder="Search Yojna Portal"
                         required 
                     >
-                     <span class="reset-btn" id="resetBtn">✖</span>
+            <span class="reset-btn" onclick="location.reload();">✖</span>
                     <button type="submit" class="mobile-search-button">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
             
     <div id="suggestionsList" class="suggestions-list">
+         <div class="suggestion-item"><a href="https://yojnaportal.com/menu/" target="_blank"> Menu</a></div>
                 <div class="suggestion-item"><a href="https://yojnaportal.com/latest-update/" target="_blank"> Banner / Update</a></div>
                 <div class="suggestion-item"><a href="https://tools.v2kcomputers.com/" target="_blank">Advance tools</a></div>
                 <div class="suggestion-item"><a href="https://yojnaportal.com/quick/examdate/" target="_blank">Exam Date : Time Tables</a></div>
@@ -207,17 +208,49 @@
             .catch(error => console.error('Error!', error.message));
     });
 </script>
+  <script>
+        // Function to filter suggestions dynamically
+        function filterSuggestions() {
+            const input = document.getElementById("mobileQuery").value.toLowerCase();
+            const suggestions = document.getElementById("suggestionsList");
+            const items = suggestions.querySelectorAll(".suggestion-item");
 
-<script>
-    const searchInput = document.getElementById("mobileQuery");
-    const resetBtn = document.getElementById("resetBtn");
+            let hasResults = false;
 
-    // Reset input on "X" button click
-    resetBtn.addEventListener("click", function () {
-        searchInput.value = "";
-        searchInput.focus();
-    });
-</script>
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(input)) {
+                    item.style.display = "block";
+                    hasResults = true;
+                } else {
+                    item.style.display = "none";
+                }
+            });
+
+            // Show/hide the suggestions box based on results
+            suggestions.style.display = hasResults && input.length > 0 ? "block" : "none";
+        }
+
+        // Function to reset the search input and hide suggestions
+        function resetSearch() {
+            const input = document.getElementById("mobileQuery");
+            const suggestions = document.getElementById("suggestionsList");
+
+            input.value = ""; // Clear input field
+            suggestions.style.display = "none"; // Hide suggestions
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener("click", function(event) {
+            const suggestions = document.getElementById("suggestionsList");
+            const searchInput = document.getElementById("mobileQuery");
+
+            if (!event.target.closest(".mobile-search-container")) {
+                suggestions.style.display = "none";
+            }
+        });
+    </script>
+
 
 </body>
 </html>
