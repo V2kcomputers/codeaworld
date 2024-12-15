@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+    body {
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .center {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mobile-search-container {
+        padding: 20px;
+        background-color: #f7f7f7;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .mobile-search-input-container {
+        display: flex;
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    .mobile-search-input {
+        flex-grow: 1;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px 0 0 8px;
+        font-size: 16px;
+        padding-left: 40px;
+    }
+
+  .reset-btn {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 20px;
+        color: #000;
+    }
+
+    .mobile-search-button {
+        padding: 12px 15px;
+        background: #2f0135;
+        color: #fff;
+        border: none;
+        border-radius: 0 8px 8px 0;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .mobile-search-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .suggestions-list {
+        background: white;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+    .suggestion-item {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+        background-color: #f4f4f4;
+    }
+
+    .suggestion-item a {
+        color: black;
+        text-decoration: none;
+    }
+
+    .mobile-submit {
+        background: #2f0135;
+        border-radius: 5px;
+        width: 100%;
+        color: #fff;
+        padding: 10px 50px;
+        margin-top: 15px;
+        cursor: pointer;
+    }
+
+    .mobile-submit:hover {
+        color: #2f0135;
+        background: rgba(39, 2, 39, 0.133);
+    }
+</style>
+</head>
+<body>
+  <div class="center">
+
+    <!-- Mobile Search Overlay -->
+ 
+        <div class="mobile-search-container">
+            <form id="mobileSearchForm" method="post" action="" name="search-form">
+                 <input type="hidden" name="TimeStamp" class="Advance" id="timestamp-field">
+                  <input type="hidden" name="use-in" class="Advance" value="Desktop" >
+                <div class="mobile-search-input-container">
+                    <input 
+                        type="text" 
+                        name="Search"
+                        id="mobileQuery" onkeyup="filterSuggestions()"
+                        class="mobile-search-input" 
+                        placeholder="Search Yojna Portal"
+                        required 
+                    >
+                     <span class="reset-btn" id="resetBtn">✖</span>
+                    <button type="submit" class="mobile-search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            
+    <div id="suggestionsList" class="suggestions-list">
+                <div class="suggestion-item"><a href="https://yojnaportal.com/latest-update/" target="_blank"> Banner / Update</a></div>
+                <div class="suggestion-item"><a href="https://tools.v2kcomputers.com/" target="_blank">Advance tools</a></div>
+                <div class="suggestion-item"><a href="https://yojnaportal.com/quick/examdate/" target="_blank">Exam Date : Time Tables</a></div>
+                <div class="suggestion-item"><a href="https://yojnaportal.com/quick/last-date/" target="_blank"> Last Date for Apply</a></div>
+            </div>
+
+            <input type="submit" class="mobile-submit" value="Submit to Search...">
+        </form>
+    </div>
+</div>
+
+<script>
+    function filterSuggestions() {
+        const input = document.getElementById("mobileQuery");
+        const filter = input.value.toUpperCase();
+        const suggestions = document.getElementsByClassName("suggestion-item");
+
+        for (let i = 0; i < suggestions.length; i++) {
+            const item = suggestions[i];
+            const text = item.textContent || item.innerText;
+            if (text.toUpperCase().includes(filter)) {
+                item.classList.remove("hidden");
+            } else {
+                item.classList.add("hidden");
+            }
+        }
+    }
+</script>
+
+<script>
+    function performSearch(query) {
+        const url = `https://www.yojnaportal.com/search/#gsc.tab=0&gsc.sort=&gsc.q=${encodeURIComponent(query)}`;
+        window.open(url, '_blank');
+    }
+
+    function selectSuggestion(suggestion) {
+        document.getElementById('mobileQuery').value = suggestion;
+        performSearch(suggestion);
+        toggleMobileSearch();
+    }
+
+    document.getElementById('mobileSearchForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const query = document.getElementById('mobileQuery').value;
+        performSearch(query);
+        toggleMobileSearch();
+    });
+</script>
+
+<script type="text/javascript">
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzA_zNbxIRDyx8hjYvfoRm97aM9SM1oKceu8ZYnmFIleTXvO5iULYRaBXn_ecGwN3pJ/exec';
+    const form = document.forms['search-form'];
+
+    // Set the timestamp automatically
+    const timestampField = document.getElementById('timestamp-field');
+    const now = new Date();
+    const formattedDate = now.toLocaleString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    }).replace(',', '');
+    timestampField.value = formattedDate;
+
+    // Handle form submission
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+            .then(() => alert("Thank you! Your form is submitted successfully."))
+            .then(() => { window.location.reload(); })
+            .catch(error => console.error('Error!', error.message));
+    });
+</script>
+
+<script>
+    const searchInput = document.getElementById("mobileQuery");
+    const resetBtn = document.getElementById("resetBtn");
+
+    // Reset input on "X" button click
+    resetBtn.addEventListener("click", function () {
+        searchInput.value = "";
+        searchInput.focus();
+    });
+</script>
+
+</body>
+</html>
