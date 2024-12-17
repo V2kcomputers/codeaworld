@@ -7,105 +7,131 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-    body {
-        height: 100vh;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-    }
+     body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            font-family: 'Roboto', sans-serif;
+        }
 
-    .center {
-        display: flex;
-        justify-content: center;
-    }
+        .center {
+            display: flex;
+            justify-content: center;
+        }
 
-    .mobile-search-container {
-        padding: 20px;
-        background-color: #f7f7f7;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+        .mobile-search-container {
+            padding: 20px;
+            background-color: #f7f7f7;
+            border-radius: 8px;
 
-    .mobile-search-input-container {
-        display: flex;
-        margin-bottom: 15px;
-        position: relative;
-    }
+            
+        }
 
-    .mobile-search-input {
-        flex-grow: 1;
-        padding: 12px 15px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px 0 0 8px;
-        font-size: 16px;
-        padding-left: 40px;
-    }
+        .mobile-search-input-container {
+            display: flex;
+            position: relative;
 
-  .reset-btn {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 20px;
-        color: #000;
-    }
+        }
 
-    .mobile-search-button {
-        padding: 12px 15px;
-        background: #2f0135;
-        color: #fff;
-        border: none;
-        border-radius: 0 8px 8px 0;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-    }
+        .mobile-search-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px 0 0 8px;
+            font-size: 16px;
+            padding-left: 40px;
+        }
 
-    .mobile-search-button:hover {
-        transform: translateY(-2px);
-    }
+        .reset-btn {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: #000;
+        }
 
-    .suggestions-list {
-        background: white;
-        border-radius: 8px;
-        margin-top: 15px;
-    }
+        .mobile-search-button {
+            padding: 12px 15px;
+            background: #2f0135;
+            color: #fff;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+        }
 
-    .suggestion-item {
-        padding: 12px 15px;
-        border-bottom: 1px solid #f0f0f0;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+        .suggestions-list {
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
 
-    .suggestion-item:last-child {
-        border-bottom: none;
-    }
+        .suggestion-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            font-size: 16px;
+            color: black;
+            transition: background-color 0.3s ease;
+        }
 
-    .suggestion-item:hover {
-        background-color: #f4f4f4;
-    }
+        .suggestion-item:hover {
+            background-color: #f4f4f4;
+            color: green;
+        }
 
-    .suggestion-item a {
-        color: black;
-        text-decoration: none;
-    }
+        .suggestion-item a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-    .mobile-submit {
-        background: #2f0135;
-        border-radius: 5px;
-        width: 100%;
-        color: #fff;
-        padding: 10px 50px;
-        margin-top: 15px;
-        cursor: pointer;
-    }
+        .mobile-submit {
+            background: #2f0135;
+            border-radius: 5px;
+            width: 100%;
+            color: #fff;
+            padding: 10px 50px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        li::marker {
+    color: red;
+  }
+    /* width */
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
 
-    .mobile-submit:hover {
-        color: #2f0135;
-        background: rgba(39, 2, 39, 0.133);
-    }
-</style>
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 20px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: golden en;
+    border-radius: 20px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b30000;
+  }
+
+     @media (max-width: 768px) { 
+.mobile-search-container {  
+ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+     }
+
+    </style>
 </head>
 <body>
   <div class="center">
@@ -125,7 +151,7 @@
                         placeholder="Search Yojna Portal"
                         required 
                     >
-            <span class="reset-btn" onclick="location.reload();">✖</span>
+            <span class="reset-btn" onclick="location.reload();">&times; </span>
                     <button type="submit" class="mobile-search-button">
                         <i class="fas fa-search"></i>
                     </button>
@@ -137,9 +163,11 @@
                 <div class="suggestion-item"><a href="https://tools.v2kcomputers.com/" target="_blank">Advance tools</a></div>
                 <div class="suggestion-item"><a href="https://yojnaportal.com/quick/examdate/" target="_blank">Exam Date : Time Tables</a></div>
                 <div class="suggestion-item"><a href="https://yojnaportal.com/quick/last-date/" target="_blank"> Last Date for Apply</a></div>
+                <div class="suggestion-item"><a href="https://www.v2kcomputers.com/p/pdf-formsjn.html" target="_blank"> Pdf Forms Download </a></div>
+                
             </div>
 
-            <input type="submit" class="mobile-submit" value="Submit to Search...">
+            <input type="submit" class="mobile-submit"  value="🔍Submit to Search..."> 
         </form>
     </div>
 </div>
@@ -209,48 +237,36 @@
     });
 </script>
   <script>
-        // Function to filter suggestions dynamically
         function filterSuggestions() {
             const input = document.getElementById("mobileQuery").value.toLowerCase();
-            const suggestions = document.getElementById("suggestionsList");
-            const items = suggestions.querySelectorAll(".suggestion-item");
+            const suggestions = document.querySelectorAll(".suggestion-item");
 
-            let hasResults = false;
+            suggestions.forEach(item => {
+                const originalText = item.textContent;
+                if (input) {
+                    // Highlight all matching letters in red
+                    const highlightedText = originalText.replace(new RegExp(input, "gi"), match => {
+                        return `<span style="color: red; font-weight: bold;">${match}</span>`;
+                    });
 
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                if (text.includes(input)) {
-                    item.style.display = "block";
-                    hasResults = true;
+                    if (originalText.toLowerCase().includes(input)) {
+                        item.innerHTML = highlightedText;
+                        item.style.display = "block";
+                    } else {
+                        item.style.display = "none";
+                    }
                 } else {
-                    item.style.display = "none";
+                    item.innerHTML = originalText; // Reset to original text
+                    item.style.display = "block";
                 }
             });
-
-            // Show/hide the suggestions box based on results
-            suggestions.style.display = hasResults && input.length > 0 ? "block" : "none";
         }
 
-        // Function to reset the search input and hide suggestions
         function resetSearch() {
-            const input = document.getElementById("mobileQuery");
-            const suggestions = document.getElementById("suggestionsList");
-
-            input.value = ""; // Clear input field
-            suggestions.style.display = "none"; // Hide suggestions
+            document.getElementById("mobileQuery").value = "";
+            filterSuggestions();
         }
-
-        // Hide suggestions when clicking outside
-        document.addEventListener("click", function(event) {
-            const suggestions = document.getElementById("suggestionsList");
-            const searchInput = document.getElementById("mobileQuery");
-
-            if (!event.target.closest(".mobile-search-container")) {
-                suggestions.style.display = "none";
-            }
-        });
     </script>
-
 
 </body>
 </html>
