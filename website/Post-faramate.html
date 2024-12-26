@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Advanced Driving License Post</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .btn-add {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .btn-delete {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .btn-generate {
+      background-color: #007bff;
+      color: #fff;
+    }
+    .btn-copy {
+      background-color: #17a2b8;
+      color: #fff;
+    }
+    .dynamic-section {
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1> Scheme Post Generatior</h1>
+
+    <div class="form-group">
+      <label for="post-title">Post Title</label>
+      <input type="text" id="post-title" placeholder="Enter the post title">
+    </div>
+
+    <div class="form-group">
+      <label for="post-subtitle">Information Subtitle</label>
+      <input type="text" id="post-subtitle" placeholder="Enter the subtitle">
+    </div>
+ <div class="form-group">
+  <label for="post-description">Post Description</label>
+  <input type="text" id="post-description" placeholder="Enter a brief description">
+</div>
+
+    <div class="dynamic-section" id="dynamic-section">
+      <h3>Information and Documents</h3>
+      <button class="btn btn-add" onclick="addDynamicRow('information')">Add Information</button>
+      <button class="btn btn-add" onclick="addDynamicRow('document')">Add Document</button>
+      <table id="dynamic-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Heading</th>
+            <th>Content</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="dynamic-section" id="link-section">
+      <h3>Links</h3>
+      <button class="btn btn-add" onclick="addLinkRow()">Add Link</button>
+      <table id="link-table">
+        <thead>
+          <tr>
+            <th>Link Name</th>
+            <th>Link</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="btn btn-generate" onclick="generateHTML()">Generate HTML</button>
+    <button class="btn btn-copy" onclick="copyHTML()">Copy HTML Code</button>
+
+    <textarea id="generated-html" style="width: 100%; height: 200px; margin-top: 20px;"></textarea>
+  </div>
+
+  <script>
+    function addDynamicRow(type) {
+  const table = document.getElementById('dynamic-table').querySelector('tbody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
+    <td><input type="text" placeholder="Enter ${type} heading"></td>
+    <td>
+      <textarea placeholder="Enter ${type} content"></textarea>
+    </td>
+    <td><button class="btn btn-delete" onclick="deleteRow(this)">Delete</button></td>`;
+  table.appendChild(row);
+}
+
+
+    function addLinkRow() {
+      const table = document.getElementById('link-table').querySelector('tbody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" placeholder="Enter link name"></td>
+        <td><input type="text" placeholder="Enter URL"></td>
+        <td><button class="btn btn-delete" onclick="deleteRow(this)">Delete</button></td>`;
+      table.appendChild(row);
+    }
+
+    function deleteRow(button) {
+      button.closest('tr').remove();
+    }
+
+  function generateHTML() {
+  const title = document.getElementById('post-title').value;
+  const subtitle = document.getElementById('post-subtitle').value;
+  const desupdate = document.getElementById('post-description').value;
+  const description = `${desupdate} ${title}. ${subtitle}`;
+
+  const dynamicRows = document.querySelectorAll('#dynamic-table tbody tr');
+  const informationHTML = [];
+  const documentHTML = [];
+
+  dynamicRows.forEach(row => {
+    const type = row.children[0].textContent;
+    const heading = row.children[1].querySelector('input').value;
+    const content = row.children[2].querySelector('textarea').value;
+
+    // Break content into list items
+    const contentList = content.split('\n').map(item => `<li>${item}</li>`).join('');
+
+    if (type === 'Information') {
+      informationHTML.push(`
+        <div class="schemes-container"> 
+          <div class="card">
+            <div class="card-header"> 
+              <span> 🔖</span> ${heading} 
+            </div> 
+            <div class="card-content"> 
+              <ul>${contentList}</ul>
+            </div>
+          </div>
+        </div>`);
+    } else if (type === 'Document') {
+      documentHTML.push(`
+        <div class="card document-list">
+          <div class="card-header"> 
+            <span> 📢</span> ${heading} 
+          </div> 
+          <div class="card-content"> 
+            <ul>${contentList}</ul>
+          </div>
+        </div>`);
+    }
+  });
+
+  const linkRows = document.querySelectorAll('#link-table tbody tr');
+  const linkHTML = [];
+  linkRows.forEach(row => {
+    const name = row.children[0].querySelector('input').value;
+    const url = row.children[1].querySelector('input').value;
+    linkHTML.push(`
+      <tr>
+        <td class="highlight">${name}</td>
+        <td><a href="${url}" target="_blank">Click Here</a></td>
+      </tr>`);
+  });
+
+  const generatedHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="${description}">
+  <link rel="stylesheet" href="\css\scheme-posts.css">
+  <title>${title}</title>
+</head>
+<body>
+  <div class="schemes-container">
+    <div class="job-header">
+      <h1 class="job-main-title">${title}</h1>
+      <h2 class="job-sub-title">${subtitle}</h2>
+    </div>
+    ${informationHTML.join('')}
+    ${documentHTML.join('')}
+    <div class="card important-links">
+      <div class="card-header">
+        🔗 Important Links
+      </div>
+      <div class="card-content">
+        <table class="job-table-container">
+          <tr>
+            <th>
+              <span class="highlight">Important Links</span>
+            </th>
+            <th>Link</th>
+          </tr>
+          ${linkHTML.join('')}
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  document.getElementById('generated-html').value = generatedHTML;
+}
+
+
+    function copyHTML() {
+      const htmlContent = document.getElementById('generated-html');
+      htmlContent.select();
+      document.execCommand('copy');
+      alert('HTML code copied to clipboard!');
+    }
+  </script>
+</body>
+</html>
