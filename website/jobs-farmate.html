@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jobs Update Formate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .form-container {
+      max-width: 700px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-header {
+      background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+      padding: 10px;
+      text-align: center;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .form-header h1 {
+      margin: 0;
+      color: #B22222;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .form-group button {
+      background: #FFD700;
+      border: none;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 10px 20px;
+      transition: background 0.3s;
+      margin-right: 10px;
+    }
+    .form-group button:hover {
+      background: #FFA500;
+    }
+    .links-container {
+      margin-top: 10px;
+    }
+    .link-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .link-item input {
+      flex: 1;
+      margin-right: 10px;
+    }
+    .output-container {
+      max-width: 700px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .output-container pre {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    .form-table {width:100%;}
+    td {padding: 10px;}
+    
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <div class="form-header">
+      <h1>Jobs Post Formate Generator</h1>
+    </div>
+    <form id="dataForm">
+      <div class="form-group">
+        <label for="main-title">Main Title:</label>
+        <input type="text" id="main-title" name="main-title" placeholder="Enter Main Title" required>
+      </div>
+      <div class="form-group">
+        <label for="sub-title">Sub Title:</label>
+        <input type="text" id="sub-title" name="sub-title" placeholder="Enter Sub Title" required>
+      </div>
+      <div class="form-group">
+        <label for="notification">Notification:</label>
+        <textarea id="notification" name="notification" rows="2" placeholder="Enter Notification"></textarea>
+      </div>
+<div class="form-group">
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" placeholder="Enter Main Title" required>
+      </div>
+
+      <table class="form-table"> 
+        <tr><td>
+      <div class="form-group">
+        <label for="important-dates">Important Dates:</label>
+        <textarea id="important-dates" name="important-dates" rows="3" placeholder="Enter Important Dates"></textarea>
+      </div> </td> <td>
+      <div class="form-group">
+        <label for="application-fee">Application Fee:</label>
+        <textarea id="application-fee" name="application-fee" rows="3" placeholder="Enter Application Fee Details"></textarea>
+      </div> </td></tr>
+      <tr> <td>
+      <div class="form-group">
+        <label for="eligibility">Eligibility:</label>
+        <textarea id="eligibility" name="eligibility" rows="3" placeholder="Enter Eligibility Details"></textarea>
+      </div> </td><td>
+      <div class="form-group">
+        <label for="vacancy-details">Vacancy Details:</label>
+        <textarea id="vacancy-details" name="vacancy-details" rows="3" placeholder="Enter Vacancy Details"></textarea>
+      </div> </td>
+    </tr></table>
+      <div class="form-group">
+        <label for="education-wise">Education-Wise Details:</label>
+        <textarea id="education-wise" name="education-wise" rows="3" placeholder="Enter Education-Wise Details"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Important Links:</label>
+        <div id="links-container" class="links-container"></div>
+        <button type="button" onclick="addLink()">Add Link</button>
+      </div>
+      <div class="form-group">
+        <button type="button" onclick="generateHTML()">Generate HTML</button>
+      </div>
+    </form>
+  </div>
+  <div class="output-container" id="outputContainer" style="display: none;">
+    <h2>Generated HTML:</h2>
+    <pre id="output"></pre>
+    <button onclick="copyToClipboard()">Copy HTML</button>
+    <button onclick="previewHTML()">Preview HTML</button>
+  </div>
+  <script>
+    function addLink() {
+      const container = document.getElementById('links-container');
+      const div = document.createElement('div');
+      div.className = 'link-item';
+      div.innerHTML = `
+        <input type="text" placeholder="Link Label" required>
+        <input type="url" placeholder="Link URL" required>
+        <button type="button" onclick="removeLink(this)">Remove</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function removeLink(button) {
+      button.parentElement.remove();
+    }
+
+    function textareaToList(text) {
+      return `<ul>${text.split('\n').filter(line => line.trim()).map(line => `<li>${line.trim()}</li>`).join('')}</ul>`;
+    }
+
+    function generateHTML() {
+  const mainTitle = document.getElementById('main-title').value;
+  const subTitle = document.getElementById('sub-title').value;
+  const notification = document.getElementById('notification').value;
+  const description = document.getElementById('description').value;
+  const applicationFee = textareaToList(document.getElementById('application-fee').value);
+  const importantDates = textareaToList(document.getElementById('important-dates').value);
+  const eligibility = textareaToList(document.getElementById('eligibility').value);
+  const vacancyDetails = textareaToList(document.getElementById('vacancy-details').value);
+  
+  // Directly use raw HTML for the education-wise field
+  const educationWise = document.getElementById('education-wise').value;
+
+  const links = Array.from(document.querySelectorAll('.link-item')).map(link => {
+    const label = link.children[0].value;
+    const url = link.children[1].value;
+    return `<tr><td>${label}</td><td><a href="${url}" target="_blank"> click here </a></td></tr>`;
+  }).join('');
+
+  const generatedHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="\css\job-posts.css">
+    <meta name="description" content="${description}, ${subTitle}, ${notification}">
+  <title>${mainTitle}</title>
+</head>
+<body>
+  <div class="job-container">
+    <div class="job-header">
+      <h1 class="job-main-title">${mainTitle}</h1>
+      <h2 class="job-sub-title">${subTitle}</h2>
+      <p class="notification">Short Details of Notification ${notification}</p>
+    </div>
+    <div class="job-content">
+      <div class="job-section">
+       <div class="job-card">
+          <h3>Important Dates</h3>
+          ${importantDates}
+        </div>
+        <div class="job-card">
+          <h3>Application Fee</h3>
+          ${applicationFee}
+        </div>
+       
+      </div>
+      <div class="job-section">
+        <div class="job-card">
+          <h3>Eligibility</h3>
+          ${eligibility}
+          <p>
+            <span class="job-important">Age relaxation as per rules of ${notification}.</span>
+          </p>
+        </div>
+        <div class="job-card">
+          <h3>Vacancy Details</h3>
+          ${vacancyDetails}
+        </div>
+      </div>
+      <div class="job-card">
+        <h3>Education-Wise Details</h3>
+
+<div> <table class="jobs-table">
+           ${educationWise}
+          </table></div>
+ </div>
+    </div>
+ <div class="job-card">
+            <h3>How to Apply</h3>
+            <div class="notice-header">
+               📢 Important Instructions for Candidates
+           </div>
+
+           <div class="step">
+               <div class="step-title">✅ for Applying  ${subTitle}   </div>
+               <p>Go to official Site and Read Instructions and notification for Candidates from official Website before Apply .</p>
+           </div>
+       
+           <div class="step">
+               <div class="step-title">✅ Read the Notification</div>
+               <p>Carefully go through the official notification to understand the recruitment process and requirements.</p>
+           </div>
+       
+           <div class="step">
+               <div class="step-title">✅ Document Preparation</div>
+               <ul>
+                   <li>Verify your eligibility and gather essential documents like ID proof, address details, and basic details.</li>
+                   <li>Keep scanned copies of necessary documents ready, including your photo, signature, and ID proof.</li>
+               </ul>
+           </div>
+       
+           <div class="step">
+               <div class="step-title">✅ Application Submission</div>
+               <p>Before submitting, thoroughly check the preview of your application form and review all fields carefully.</p>
+           </div>
+       
+           <div class="step">
+               <div class="step-title">✅ Final Step</div>
+               <p>Take a printout of the final submitted form for future reference.</p>
+           </div>
+       
+           <div class="note">
+               ⚠️ Note: Incomplete or incorrect applications may lead to rejection.
+           </div>
+       
+        </div>
+
+    <div class="job-card">
+            <h3>Important Notice</h3>
+            <div class="imp-notice">
+               ⚠️ Important Notice for Interested Candidates!
+       Please read the full notification ${notification} carefully before applying online.
+            </div>
+        </div>
+ 
+
+<div class="job-card">
+ <h3>Important Links</h3>
+    <div class="jobs-table">
+      <table>
+        <tr>
+          <th><span class="highlight-blue">Important Links</span></th>
+          <th>Link</th>
+        </tr>
+        ${links}
+      </table>
+    </div>
+  </div>
+</body>
+</html>`;
+  
+  document.getElementById('output').textContent = generatedHTML;
+  document.getElementById('outputContainer').style.display = 'block';
+}
+
+
+    function copyToClipboard() {
+      const output = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(output).then(() => {
+        alert('HTML copied to clipboard!');
+      });
+    }
+
+    function previewHTML() {
+      const output = document.getElementById('output').textContent;
+      const newWindow = window.open();
+      newWindow.document.open();
+      newWindow.document.write(output);
+      newWindow.document.close();
+    }
+  </script>
+</body>
+</html>
