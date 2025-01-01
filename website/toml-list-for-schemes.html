@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hugo Front Matter Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select, textarea {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .editable-line {
+            display: flex;
+            align-items: center;
+        }
+        .delete-btn {
+            margin-left: 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hugo Front Matter Form</h1>
+    <form id="hugoForm">
+        <div class="editable-line">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+        <div class="editable-line">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+        <div class="editable-line">
+            <label for="subtitle">Subtitle:</label>
+            <input type="text" id="subtitle" name="subtitle">
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+        <div class="editable-line">
+            <label for="post-type">Post Type:</label>
+            <select id="post-type" name="post-type">
+                <option value="schemes">Schemes</option>
+                <option value="admitcard">Admit Card</option>
+                <option value="imp-link">Important Link</option>
+                <option value="student">Student</option>
+                 <option value="certificate">certificate</option>
+                <option value="results">Results</option>
+                <option value="latest-jobs">Latest Jobs</option>
+            </select>
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+        <div class="editable-line">
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" value="Madhya Pradesh">
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+        <div class="editable-line">
+            <label for="bgcolor">Background Color:</label>
+            <input type="text" id="bgcolor" name="bgcolor" value="olive">
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+        <div class="editable-line">
+            <label for="expiryDate">Expiry Date:</label>
+            <input type="date" id="expiryDate" name="expiryDate" value="9024-10-03">
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+        <div class="editable-line">
+            <label for="lastdate">Last Date:</label>
+            <input type="date" id="lastdate" name="lastdate" value="2024-10-03">
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+  
+        <div class="editable-line">
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" value="Scheme">
+            <button type="button" class="delete-btn">Delete</button>
+        </div>
+
+
+ <div class="editable-line">
+     <label for="pdfForm">PDF Form Available:</label>
+        <select id="pdfForm" name="pdf-form">
+            <option value="yes">Yes</option>
+            <option value="no" selected>No</option>
+        </select>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+
+ <div class="editable-line">
+     <label for="resultName">Pdf File Name:</label>
+        <input type="text" id="pdf-Name" name="pdf-Name">
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+
+ <div class="editable-line">
+    <label for="important">Important for Cyber Cafe:</label>
+        <select id="important" name="important">
+            <option value="yes">Yes</option>
+            <option value="no" selected>No</option>
+        </select>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+
+ <div class="editable-line">
+ <label for="baner">Banner:</label>
+        <select id="baner" name="baner">
+            <option value="yes">Yes</option>
+            <option value="no" selected>No</option>
+        </select>
+ <button type="button" class="delete-btn">Delete</button>
+        </div>
+
+ <div class="editable-line">
+     <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+
+ <div class="editable-line">
+     <label for="categories">Categories:</label>
+        <input type="text" id="categories" name="categories" value="admitcard, jobs" required>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+ <div class="editable-line">
+ <label for="image">Image:</label>
+        <input type="url" id="image" name="image">
+<button type="button" class="delete-btn">Delete</button>
+        </div>
+<div class="editable-line">
+             <label for="summary">Summary:</label>
+        <textarea id="summary" name="Summary"></textarea>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+
+ <div class="editable-line">
+      <label for="cardTitle">Card Title:</label>
+        <input type="text" id="cardTitle" name="cardTitle" value=" " required>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+         <div class="editable-line">
+             <label for="infoText">Card Info Text:</label>
+        <input type="text" id="infoText" name="infoText" value=" " required>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+
+ <div class="editable-line">
+      <label for="schemeText">Card Scheme Text:</label>
+        <input type="text" id="schemeText" name="schemeText" value=" " required>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+         <div class="editable-line">
+             <label for="documents">Documents:</label>
+        <input type="text" id="documents" name="documents" value="आवश्यक दस्तावेज" required>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+ <div class="editable-line">
+     <label for="portalName">Portal Name:</label>
+        <input type="text" id="portalName" name="portalName" value="YOJNA PORTAL" required>
+  <button type="button" class="delete-btn">Delete</button>
+        </div>
+        
+        <button type="submit">Submit to Copy all </button>
+    </form>
+
+    <script>
+        document.querySelector("#hugoForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const tomlData = [];
+
+            formData.forEach((value, key) => {
+                if (key === "categories" || key === "authors") {
+                    tomlData.push(`${key} = [${value.split(',').map(v => `\"${v.trim()}\"`).join(', ')}]`);
+                } else if (["draft", "important", "baner", "admitcard", "result", "pdf-form"].includes(key)) {
+                    tomlData.push(`${key} = ${value}`);
+                } else {
+                    tomlData.push(`${key} = \"${value}\"`);
+                }
+            });
+
+            const tomlString = `+++
+${tomlData.join("\n")}
++++`;
+
+            navigator.clipboard.writeText(tomlString).then(() => {
+                alert("TOML configuration copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy:", err);
+            });
+        });
+
+        document.querySelectorAll(".delete-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                const parent = this.closest(".editable-line");
+                parent.remove();
+            });
+        });
+    </script>
+</body>
+</html>
