@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to WebP Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        .drop-zone:hover {
+            border-color: #666;
+        }
+        .settings {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .settings label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .settings input {
+            margin-bottom: 1rem;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #preview {
+            margin-top: 1rem;
+        }
+        .preview-image {
+            max-width: 100%;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .progress {
+            margin-top: 1rem;
+            display: none;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF to WebP Converter</h1>
+        <div class="drop-zone" id="dropZone">
+            <p>Drop PDF file here or click to select</p>
+            <input type="file" id="fileInput" accept=".pdf" style="display: none">
+        </div>
+        
+        <div class="settings">
+            <label>
+                Quality (1-100):
+                <input type="range" id="quality" value="80" min="1" max="100">
+            </label>
+            <label>
+                Scale (0.1-2.0):
+                <input type="range" id="scale" value="1.0" min="0.1" max="2.0" step="0.1">
+            </label>
+        </div>
+
+        <button id="convertButton" disabled>Convert to WebP</button>
+
+        <div class="progress" id="progress">
+            <p>Converting page <span id="currentPage">0</span> of <span id="totalPages">0</span></p>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+        </div>
+
+        <div id="preview"></div>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const convertButton = document.getElementById('convertButton');
+        const preview = document.getElementById('preview');
+        const progress = document.getElementById('progress');
+        const currentPageElement = document.getElementById('currentPage');
+        const totalPagesElement = document.getElementById('totalPages');
+        const progressBarFill = document.getElementById('progressBarFill');
+
+        let pdfFile = null;
+
+        // Handle drag and drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#007bff';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ccc';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ccc';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                handleFile(file);
+            }
+        });
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        });
+
+        function handleFile(file) {
+            pdfFile = file;
+            convertButton.disabled = false;
+            preview.innerHTML = `<p>Selected file: ${file.name}</p>`;
+        }
+
+        convertButton.addEventListener('click', async () => {
+            if (!pdfFile) return;
+
+            const quality = document.getElementById('quality').value;
+            const scale = document.getElementById('scale').value;
+            
+            progress.style.display = 'block';
+            preview.innerHTML = '';
+            convertButton.disabled = true;
+
+            try {
+                const arrayBuffer = await pdfFile.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                
+                totalPagesElement.textContent = pdf.numPages;
+                
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    currentPageElement.textContent = i;
+                    progressBarFill.style.width = `${(i / pdf.numPages) * 100}%`;
+
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: parseFloat(scale) });
+                    
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+
+                    const webpData = canvas.toDataURL('image/webp', quality / 100);
+                    
+                    // Create download link
+                    const link = document.createElement('a');
+                    link.href = webpData;
+                    link.download = `file_${i}.webp`;
+                    link.innerHTML = `Download Page ${i}`;
+                    link.className = 'download-link';
+                    
+                    // Create preview image
+                    const img = document.createElement('img');
+                    img.src = webpData;
+                    img.className = 'preview-image';
+                    
+                    preview.appendChild(img);
+                    preview.appendChild(link);
+                    preview.appendChild(document.createElement('br'));
+                }
+            } catch (error) {
+                preview.innerHTML = `<p style="color: red">Error: ${error.message}</p>`;
+            } finally {
+                convertButton.disabled = false;
+                progress.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
