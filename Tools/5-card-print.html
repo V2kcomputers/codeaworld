@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .card-container{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px 5px;
+            padding: 0px;
+            max-width: 320px;
+            margin: 20px auto;
+            align-items: center;
+      justify-content: center;
+      position: relative;
+        }
+
+        .image-holder {
+            position: relative;
+            width: 220px;
+            height: 134px;
+            border-radius: 5px;
+            overflow: hidden;
+              background: linear-gradient(180deg, 
+                #87CEEB 0%, 
+                #87CEEB 50%,
+                #90EE90 60%,
+                #228B22 80%
+            );
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-holder.drag-over {
+            border: 2px dashed #666;
+            background: rgba(135, 206, 235, 0.8);
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 20px;
+            width: 40px;
+            height: 20px;
+            top: 20px;
+        }
+
+        .cloud:nth-child(1) { left: 20%; }
+        .cloud:nth-child(2) { left: 60%; }
+
+        .upload-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #333;
+            font-family: Arial, sans-serif;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+ .image-preview  {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: none; /* Hidden initially until an image is uploaded */
+    background: #fff; /* Optional: Transparent background for better visuals */
+}
+
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-icon {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        /* Top buttons */
+        .buttons-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .buttons-container button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .buttons-container button:hover {
+            background-color: #45a049;
+        }
+       
+        @media print {
+      /* Hide header when printing */
+      .header, .footer, .navbar, .sidebar, button, #note, .upload-icon, .upload-text {
+        display: none;
+      }
+       .container {
+  width:100%;
+      right: 10;
+    }
+     .image-holder {
+        background: #fff;
+         width: 440px;
+        height: 268px;
+     }
+     
+    } 
+    </style>
+</head>
+<body>
+
+    <!-- Top buttons -->
+    <div class="buttons-container">
+          <button class="print" onclick="window.print()"><i class="fa fa-print"></i> Print </button>
+        <button onclick="toggleBorder()"> <i class="fa fas-border" style="font-size:11px;color:white" ></i>Border</button>
+        <button onclick="downloadFullPage()"><i class="fa fa-download" ></i> Download Page</button>
+        <button  class="reload" onclick="location.reload();"> <i class="fa fa-refresh" ></i> Reset </button>
+ 
+    </div>
+
+    <!-- Image container -->
+    <div class="card-container">
+        <script>
+            // Create 10 image holders
+            for (let i = 0; i < 10; i++) {
+                document.write(`
+                    <div class="image-holder" ondrop="dropHandler(event, ${i})" ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" onclick="clickHandler(${i})">
+                        <div class="cloud"></div>
+                        <div class="cloud"></div>
+                        <div class="upload-text" id="text-${i}">
+                            <span class="upload-icon">📁</span>
+                            Click or drag image
+                        </div>
+                        <input type="file" class="file-input" id="file-${i}" accept="image/*" onchange="handleFileSelect(event, ${i})">
+                        <img class="image-preview" id="preview-${i}">
+                    </div>
+                `);
+            }
+        </script>
+    </div>
+
+    <script>
+        function clickHandler(index) {
+            document.getElementById(`file-${index}`).click();
+        }
+
+        function handleFileSelect(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                displayImage(file, index);
+            }
+        }
+
+        function dropHandler(event, index) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('drag-over');
+            
+            const file = event.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                displayImage(file, index);
+            }
+        }
+
+        function dragOverHandler(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function dragLeaveHandler(event) {
+            event.currentTarget.classList.remove('drag-over');
+        }
+
+        function displayImage(file, index) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById(`preview-${index}`);
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+
+                const uploadText = document.getElementById(`text-${index}`);
+                if (uploadText) uploadText.style.display = 'none'; // Hide upload text
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Download image function
+        function downloadImage() {
+            const previewImages = document.querySelectorAll('.image-preview');
+            previewImages.forEach((preview) => {
+                if (preview.src) {
+                    const link = document.createElement('a');
+                    link.href = preview.src;
+                    link.download = 'downloaded_image.jpg';
+                    link.click();
+                }
+            });
+        }
+
+        // Print image function
+        function printImage() {
+            const previewImages = document.querySelectorAll('.image-preview');
+            previewImages.forEach((preview) => {
+                if (preview.src) {
+                    const printWindow = window.open('', '', 'width=600,height=600');
+                    printWindow.document.write('<html><body><img src="' + preview.src + '" style="width:100%;"></body></html>');
+                    printWindow.document.close();
+                    printWindow.print();
+                }
+            });
+        }
+
+        // Toggle border function
+        let borderApplied = false;
+        function toggleBorder() {
+            const imageHolders = document.querySelectorAll('.image-holder');
+            borderApplied = !borderApplied; // Toggle state
+            imageHolders.forEach((holder) => {
+                holder.style.border = borderApplied ? '1px solid #a1a1a1' : 'none';
+            });
+        }
+
+        // Download full page as an image
+        function downloadFullPage() {
+            html2canvas(document.body, {scale: 2}).then((canvas) => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'page.png';
+                link.click();
+            });
+        }
+    </script>
+
+</body>
+</html>
