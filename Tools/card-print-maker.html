@@ -9,9 +9,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       background-color: #f8f8f8;
-      height: 100vh;
     }
 
     .toolbar {
@@ -39,7 +37,6 @@
     }
 
     .card-container {
-      margin:auto;
       width: 500px;
       height: 300px;
       background-color: #f0f0f0;
@@ -95,7 +92,7 @@
   </style>
 </head>
 <body>
-
+  
 
   <div class="card-container" id="dropZone">
     <div class="image-preview" id="imagePreview">
@@ -106,7 +103,7 @@
   <button class="download-btn" id="downloadBtn" style="display: none;">Download Image</button>
   <input type="file" accept="image/*" id="fileInput" style="display: none;">
   <div class="file-name" id="fileName"></div>
-  <div class="toolbar">
+<div class="toolbar">
     <label>
       Width:
       <input type="range" id="widthRange" min="100" max="1000" value="500">
