@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8f8f8;
+      height: 100vh;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toolbar label {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .toolbar input[type="range"],
+    .toolbar input[type="number"],
+    .toolbar input[type="color"] {
+      cursor: pointer;
+    }
+
+    .card-container {
+      margin:auto;
+      width: 500px;
+      height: 300px;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      border: 2px dashed #ccc;
+      text-align: center;
+    }
+
+    .card-container.dragover {
+      border-color: #007bff;
+      background-color: #e0f0ff;
+    }
+
+    .image-preview img {
+      transition: all 0.3s ease-in-out;
+      transform-origin: center;
+    }
+
+    .upload-text {
+      color: #666;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .download-btn {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .download-btn:hover {
+      background-color: #218838;
+    }
+
+    .file-name {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <label>
+      Width:
+      <input type="range" id="widthRange" min="100" max="1000" value="500">
+      <input type="number" id="widthNumber" min="100" max="1000" value="500">
+    </label>
+    <label>
+      Height:
+      <input type="range" id="heightRange" min="100" max="1000" value="300">
+      <input type="number" id="heightNumber" min="100" max="1000" value="300">
+    </label>
+    <label>
+      Rotate:
+      <input type="range" id="rotateRange" min="0" max="360" value="0">
+      <input type="number" id="rotateNumber" min="0" max="360" value="0">
+    </label>
+    <label>
+      Brightness:
+      <input type="range" id="brightnessRange" min="50" max="200" value="100">
+      <input type="number" id="brightnessNumber" min="50" max="200" value="100">
+    </label>
+    <label>
+      Contrast:
+      <input type="range" id="contrastRange" min="50" max="200" value="100">
+      <input type="number" id="contrastNumber" min="50" max="200" value="100">
+    </label>
+    <label>
+      Margin:
+      <input type="range" id="marginRange" min="0" max="50" value="0">
+      <input type="number" id="marginNumber" min="0" max="50" value="0">
+    </label>
+  </div>
+
+  <div class="card-container" id="dropZone">
+    <div class="image-preview" id="imagePreview">
+      <div class="upload-text">Drag & drop, click to upload, or paste an image here</div>
+    </div>
+  </div>
+
+  <button class="download-btn" id="downloadBtn" style="display: none;">Download Image</button>
+  <input type="file" accept="image/*" id="fileInput" style="display: none;">
+  <div class="file-name" id="fileName"></div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const fileNameDisplay = document.getElementById('fileName');
+
+    const widthRange = document.getElementById('widthRange');
+    const heightRange = document.getElementById('heightRange');
+    const rotateRange = document.getElementById('rotateRange');
+    const brightnessRange = document.getElementById('brightnessRange');
+    const contrastRange = document.getElementById('contrastRange');
+    const marginRange = document.getElementById('marginRange');
+
+    const widthNumber = document.getElementById('widthNumber');
+    const heightNumber = document.getElementById('heightNumber');
+    const rotateNumber = document.getElementById('rotateNumber');
+    const brightnessNumber = document.getElementById('brightnessNumber');
+    const contrastNumber = document.getElementById('contrastNumber');
+    const marginNumber = document.getElementById('marginNumber');
+
+    // Sync range and number inputs
+    function syncInputs(range, number) {
+      range.addEventListener('input', () => {
+        number.value = range.value;
+        applyStyles();
+      });
+
+      number.addEventListener('input', () => {
+        range.value = number.value;
+        applyStyles();
+      });
+    }
+
+    // Apply styles to the image
+    function applyStyles() {
+      const img = imagePreview.querySelector('img');
+      if (img) {
+        img.style.width = `${widthRange.value}px`;
+        img.style.height = `${heightRange.value}px`;
+        img.style.transform = `rotate(${rotateRange.value}deg)`;
+        img.style.filter = `brightness(${brightnessRange.value}%) contrast(${contrastRange.value}%)`;
+        img.style.margin = `${marginRange.value}px`;
+      }
+    }
+
+    // Handle file upload and drag-and-drop
+    function displayImage(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+        applyStyles();
+        downloadBtn.style.display = 'block';
+        fileNameDisplay.textContent = `Uploaded Image: ${file.name}`;
+        downloadBtn.setAttribute('data-filename', file.name);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        displayImage(file);
+      }
+    });
+
+    dropZone.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        displayImage(file);
+      }
+    });
+
+    // Download the image with applied styles
+    downloadBtn.addEventListener('click', () => {
+      const img = imagePreview.querySelector('img');
+      if (img) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const rotation = parseFloat(rotateRange.value) * (Math.PI / 180);
+
+        // Set canvas dimensions to accommodate rotation
+        const width = 1500;
+        const height = 900;
+
+        // Calculate the new width and height after rotation
+        const radian = Math.PI * (rotateRange.value / 180);
+        const cos = Math.abs(Math.cos(radian));
+        const sin = Math.abs(Math.sin(radian));
+
+        canvas.width = width * cos + height * sin;
+        canvas.height = height * cos + width * sin;
+
+        // Center the rotation
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(rotation);
+        ctx.translate(-width / 2, -height / 2);
+
+        // Apply styles and draw image
+        ctx.filter = `brightness(${brightnessRange.value}%) contrast(${contrastRange.value}%)`;
+        const imgElement = new Image();
+        imgElement.src = img.src;
+        imgElement.onload = () => {
+          ctx.drawImage(imgElement, 0, 0, width, height);
+
+          // Trigger download with the original image name
+          const fileName = downloadBtn.getAttribute('data-filename').split('.')[0];
+          const link = document.createElement('a');
+          link.download = `${fileName}-edited.png`;
+          link.href = canvas.toDataURL('image/png', 1.0); // High-quality PNG
+          link.click();
+        };
+      }
+    });
+
+    // Sync all sliders and numbers
+    syncInputs(widthRange, widthNumber);
+    syncInputs(heightRange, heightNumber);
+    syncInputs(rotateRange, rotateNumber);
+    syncInputs(brightnessRange, brightnessNumber);
+    syncInputs(contrastRange, contrastNumber);
+    syncInputs(marginRange, marginNumber);
+  </script>
+</body>
+</html>
