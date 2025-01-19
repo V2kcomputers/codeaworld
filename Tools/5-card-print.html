@@ -10,7 +10,7 @@
             font-family: Arial, sans-serif;
         }
 
-        .card-container{
+        .container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px 5px;
@@ -118,11 +118,12 @@
        .container {
   width:100%;
       right: 10;
+      gap: 7px 5px;
     }
      .image-holder {
         background: #fff;
-         width: 440px;
-        height: 268px;
+         width: 320px;
+        height: 199px;
      }
      
     } 
@@ -140,7 +141,7 @@
     </div>
 
     <!-- Image container -->
-    <div class="card-container">
+    <div class="container">
         <script>
             // Create 10 image holders
             for (let i = 0; i < 10; i++) {
@@ -250,6 +251,7 @@
             });
         }
     </script>
+
 <script>
     // Disable specific key combinations
     document.addEventListener('keydown', function (e) {
