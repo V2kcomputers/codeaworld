@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Crop Aadhaar Card (Ultra HD)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    
+    canvas {
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 100%;
+      height: auto;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+    
+    #crop-area {
+      margin-top: 20px;
+    }
+    
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    input[type="file"] {
+      margin: 20px 0;
+    }
+    
+    .quality-info {
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Auto Crop Aadhaar Card (Ultra HD)</h1>
+  <div class="quality-info">Current Resolution: <span id="resolution">-</span></div>
+  <input type="file" id="upload" accept="application/pdf, image/*">
+  <div id="password-container" style="display:none;">
+    <p>Enter Password:</p>
+    <input type="password" id="password">
+    <button id="unlock">Unlock PDF</button>
+  </div>
+  <canvas id="original" style="display:none;"></canvas>
+  <canvas id="cropped"></canvas>
+  <br>
+  <button id="download" style="display:none;">Download Ultra HD Image</button>
+
+  <script>
+    const uploadInput = document.getElementById("upload");
+    const passwordContainer = document.getElementById("password-container");
+    const passwordInput = document.getElementById("password");
+    const unlockButton = document.getElementById("unlock");
+    const originalCanvas = document.getElementById("original");
+    const croppedCanvas = document.getElementById("cropped");
+    const downloadButton = document.getElementById("download");
+    const resolutionDisplay = document.getElementById("resolution");
+
+    const originalContext = originalCanvas.getContext("2d", { alpha: false, willReadFrequently: true });
+    const croppedContext = croppedCanvas.getContext("2d", { alpha: false, willReadFrequently: true });
+
+    // Enable image smoothing for better quality
+    originalContext.imageSmoothingEnabled = true;
+    originalContext.imageSmoothingQuality = "high";
+    croppedContext.imageSmoothingEnabled = true;
+    croppedContext.imageSmoothingQuality = "high";
+
+    let pdfDoc = null;
+
+    uploadInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const fileType = file.type;
+      if (fileType === "application/pdf") {
+        handlePDF(file);
+      } else if (fileType.startsWith("image/")) {
+        handleImage(file);
+      }
+    });
+
+    function handlePDF(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const pdfData = e.target.result;
+
+        const loadingTask = pdfjsLib.getDocument({
+          data: pdfData,
+          password: passwordInput.value,
+        });
+
+        loadingTask.promise
+          .then((doc) => {
+            pdfDoc = doc;
+            renderPDFPage(1);
+          })
+          .catch((error) => {
+            if (error.name === "PasswordException") {
+              passwordContainer.style.display = "block";
+              unlockButton.addEventListener("click", () => {
+                handlePDF(file);
+              });
+            } else {
+              alert("Error loading PDF: " + error.message);
+            }
+          });
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function renderPDFPage(pageNumber) {
+      const renderScale = 5; // Ultra HD Quality
+      pdfDoc.getPage(pageNumber).then((page) => {
+        const viewport = page.getViewport({ scale: renderScale });
+        originalCanvas.width = viewport.width;
+        originalCanvas.height = viewport.height;
+
+        const renderContext = {
+          canvasContext: originalContext,
+          viewport: viewport,
+          background: 'white',
+          enableWebGL: true
+        };
+
+        page.render(renderContext).promise.then(() => {
+          cropImage(renderScale);
+        });
+      });
+    }
+
+    function handleImage(file) {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        img.src = e.target.result;
+      };
+
+      img.onload = () => {
+        const scale = Math.max(1, Math.min(5, Math.ceil(4000 / Math.max(img.width, img.height))));
+        originalCanvas.width = img.width * scale;
+        originalCanvas.height = img.height * scale;
+        originalContext.drawImage(img, 0, 0, originalCanvas.width, originalCanvas.height);
+        cropImage(scale);
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function cropImage(scale) {
+      const cropWidth = 520 * scale;
+      const cropHeight = 170 * scale;
+      const cropX = (originalCanvas.width - cropWidth) / 2;
+      const cropY = originalCanvas.height - cropHeight - (55 * scale);
+
+      croppedCanvas.width = cropWidth;
+      croppedCanvas.height = cropHeight;
+
+      croppedContext.drawImage(
+        originalCanvas,
+        cropX,
+        cropY,
+        cropWidth,
+        cropHeight,
+        0,
+        0,
+        croppedCanvas.width,
+        croppedCanvas.height
+      );
+
+      resolutionDisplay.textContent = `${croppedCanvas.width} x ${croppedCanvas.height} pixels`;
+      downloadButton.style.display = "block";
+    }
+
+    downloadButton.addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.download = "cropped-aadhaar-hd.png";
+      link.href = croppedCanvas.toDataURL("image/png", 1.0);
+      link.click();
+    });
+  </script>
+</body>
+</html>
