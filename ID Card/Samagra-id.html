@@ -394,6 +394,26 @@ function extractPrintDate(data) {
             window.print();
         }
     </script>
+    <h1> Ifrem Load onlily Main Dowmain </h1>
+
+
+<script>
+  // Allowed domains (Aap yahan apni website aur subdomains likh sakte hain)
+  var allowedDomains = ["www.v2kcomputers.com", "tools.v2kcomputers.com"];
+
+  // Check if loaded in an iframe
+  if (window !== window.top) {
+    var referrer = document.referrer; // Jo website iframe load kar rahi hai
+
+    // Convert referrer into a domain name
+    var referrerDomain = new URL(referrer).hostname;
+
+    // Check if referrer is in the allowed list
+    if (!allowedDomains.includes(referrerDomain)) {
+      window.top.location = "tools.v2kcomputers.com/p/samagra-id-card_14.html"; // Redirect agar unauthorized ho
+    }
+  }
+</script>
     <script>
     // Disable specific key combinations
     document.addEventListener('keydown', function (e) {
